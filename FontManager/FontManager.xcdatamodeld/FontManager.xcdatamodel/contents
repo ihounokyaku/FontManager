@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13533" systemVersion="17C88" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Font" representedClassName="Font" syncable="YES">
+        <attribute name="familyName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="fileName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="path" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="directories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FontFolder" inverseName="fonts" inverseEntity="FontFolder" syncable="YES"/>
+        <relationship name="family" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="FontFamily" inverseName="fonts" inverseEntity="FontFamily" syncable="YES"/>
+        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="fonts" inverseEntity="Tag" syncable="YES"/>
+    </entity>
+    <entity name="FontFamily" representedClassName="FontFamily" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="fonts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Font" inverseName="family" inverseEntity="Font" syncable="YES"/>
+        <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tag" inverseName="fontFamilies" inverseEntity="Tag" syncable="YES"/>
+    </entity>
+    <entity name="FontFolder" representedClassName="FontFolder" syncable="YES">
+        <attribute name="isMainFolder" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="path" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="fonts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Font" inverseName="directories" inverseEntity="Font" syncable="YES"/>
+        <relationship name="subFolders" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="FontFolder" syncable="YES"/>
+    </entity>
+    <entity name="Tag" representedClassName="Tag" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="type" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="fontFamilies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="FontFamily" inverseName="tags" inverseEntity="FontFamily" syncable="YES"/>
+        <relationship name="fonts" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Font" inverseName="tags" inverseEntity="Font" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Font" positionX="-63" positionY="-18" width="128" height="150"/>
+        <element name="FontFamily" positionX="-54" positionY="36" width="128" height="90"/>
+        <element name="Tag" positionX="-54" positionY="9" width="128" height="105"/>
+        <element name="FontFolder" positionX="-45" positionY="45" width="128" height="120"/>
+    </elements>
+</model>

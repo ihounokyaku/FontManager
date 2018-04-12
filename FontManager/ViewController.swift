@@ -1,0 +1,688 @@
+//
+//  ViewController.swift
+//  FontManager
+//
+//  Created by Dylan Southard on 15/2/18.
+//  Copyright © ค.ศ. 2018 Dylan Southard. All rights reserved.
+//
+
+import Cocoa
+import CoreText
+
+class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource, NSTextFieldDelegate {
+
+    @IBOutlet weak var folderTree: NSOutlineView!
+    @IBOutlet weak var outlineView: NSOutlineView!
+    @IBOutlet weak var installedFontsTable: NSTableView!
+    @IBOutlet weak var tagTable: NSTableView!
+    @IBOutlet weak var singleTagTable: NSTableView!
+    @IBOutlet weak var tagAdder: NSTextField!
+    @IBOutlet weak var otherOptionsTable: NSTableView!
+    @IBOutlet weak var characterFilterBox: NSTextField!
+    
+   
+    @IBOutlet weak var dragClip: DraggableClip!
+    @IBOutlet weak var addFolderButton: NSButton!
+    @IBOutlet weak var removeFolder: NSButton!
+    @IBOutlet weak var removeButton: NSButton!
+    @IBOutlet weak var installButton: NSButton!
+    @IBOutlet var fontDisplay: NSTextView!
+    @IBOutlet weak var statusLabel: NSTextField!
+
+    var allTables = [NSTableView]()
+    var allButtons = [NSButton]()
+    var allTextFields = [NSTextField]()
+    
+    //=================== Managers==========================
+    let installer = FontInstaller()
+    let importer = FontImporter()
+    let dataManager = CoreDataManager()
+    
+    
+    
+//===================DISPLAY ARRAYS=====================
+    
+    var fontsDisplayed = [FontFamily:[Font]]()
+    var familyKeys = [FontFamily]()
+    
+//===================OTHER VARS=========================
+    var selectedFolderURL:URL?
+    var displayedFont = NSFont.systemFont(ofSize: 30)
+    
+    
+//===================ON LOAD=============================
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        //-----Create Arrays---------
+        self.allTables = [self.outlineView, self.folderTree, self.tagTable, self.singleTagTable, self.otherOptionsTable, self.installedFontsTable]
+        self.allButtons = [self.removeFolder, self.removeButton, self.installButton, self.addFolderButton]
+        self.allTextFields = [self.characterFilterBox, self.tagAdder]
+        
+        //-----Assign Delegates-------
+        for table in self.allTables {
+            table.dataSource = self
+            table.delegate = self
+        }
+        self.installer.delegate = self
+        self.dataManager.delegate = self
+        self.importer.delegate = self
+        self.dragClip.delegate = self
+        
+        //--------Load stuff---------
+        self.loadAllFamilies()
+        self.reloadAll()
+    }
+
+    override func viewDidAppear() {
+        
+        super.viewDidAppear()
+        self.installer.setFontDirectory()
+        self.installer.getInstalledFonts()
+    }
+    
+//====================== GET/SET FOLDERS ===================================
+    
+    
+    func getAllFonts() {
+        self.populateFontWindow()
+        self.reloadAll()
+    }
+    
+    
+//================DISPLAY STUFF =======================
+    func fontsFromDirectories(_ directories:[FontFolder])-> [Font] {
+        var fonts = [Font]()
+        for directory in directories {
+            let fontArray = Array(directory.fonts!) as! [Font]
+            for font in fontArray {
+                if !fonts.contains(font) {
+                    fonts.append(font)
+                }
+            }
+        }
+        return fonts
+    }
+    
+    func familyDictionary(fonts:[Font])-> ([FontFamily], [FontFamily:[Font]]) {
+        var keys = [FontFamily]()
+        var dic = [FontFamily:[Font]]()
+        for font in fonts {
+            if !keys.contains(font.family!) {
+                //create entry
+                dic[font.family!] = [font]
+                keys.append(font.family!)
+            } else {
+                //add to existing entry if necessary
+                if !dic[font.family!]!.contains(font) {
+                  dic[font.family!]!.append(font)
+                }
+            }
+        }
+        return (keys.sorted(by: { $0.name!.lowercased() < $1.name!.lowercased() }), dic)
+    }
+    
+    func populateFontWindow() {
+        let selectedRows = Array(self.folderTree.selectedRowIndexes)
+        if selectedRows.count == 0 {
+           self.loadAllFamilies()
+        } else {
+            let directories = self.selectedDirectories()
+            (self.familyKeys, self.fontsDisplayed) = self.familyDictionary(fonts: self.canDisplay(self.tagged(self.filterByOtherOptions(self.fontsFromDirectories(directories)))))
+        }
+       
+        self.reloadFontView()
+    }
+    
+    func selectedDirectories()->[FontFolder] {
+        var directories = [FontFolder]()
+        
+        let selectedRows = Array(self.folderTree.selectedRowIndexes)
+        if selectedRows.count == 0 {
+            self.loadAllFamilies()
+        } else {
+            for row in selectedRows {
+                if let directory = self.folderTree.item(atRow: row) as? FontFolder {
+                    directories.append(directory)
+                }
+            }
+    }
+        return directories
+    }
+    
+    func loadAllFamilies() {
+        var allKeys = self.dataManager.allFamilies().sorted(by: { $0.name!.lowercased() < $1.name!.lowercased() })
+        
+        for family in allKeys {
+            let displayableFonts = self.canDisplay(self.tagged(self.filterByOtherOptions(Array(family.fonts!) as! [Font])))
+            if displayableFonts.count > 0 {
+                self.fontsDisplayed[family] = displayableFonts
+            } else {
+                let index = allKeys.index(of: family)
+                allKeys.remove(at: index!)
+            }
+        }
+        self.familyKeys = allKeys
+        self.reloadFontView()
+    }
+    
+    func tagged(_ fonts:[Font])-> [Font] {
+        var taggedFonts = [Font]()
+        let selectedRows = (Array(self.tagTable.selectedRowIndexes) as [Int])
+        if selectedRows.count == 0 {
+            return fonts
+        }
+        for font in fonts {
+            if self.fontTagged(font) {
+                taggedFonts.append(font)
+            }
+        }
+        return taggedFonts
+    }
+    
+    func fontTagged(_ font:Font)-> Bool {
+        let fontTags = (Array(font.tags!) as! [Tag])
+        for tag in self.tagsSelected() {
+            if !fontTags.contains(tag) {
+                return false
+            }
+        }
+        return true
+    }
+    
+    func filterByOtherOptions(_ fonts:[Font])-> [Font]{
+        var selectedFonts = [Font]()
+        if self.otherOptionsTable.selectedRow < 1 {
+            return fonts
+        }
+        for font in fonts {
+            if self.fontConformsToOtherOptions(font: font) {
+                selectedFonts.append(font)
+            }
+        }
+        return selectedFonts
+    }
+    
+    func canDisplay(_ fonts:[Font])-> [Font] {
+        var filteredFonts = [Font]()
+        if self.characterFilterBox.stringValue == "" {
+            return fonts
+        }
+        for font in fonts {
+            if font.canDisplayString(str: self.characterFilterBox.stringValue) {
+                filteredFonts.append(font)
+            }
+        }
+        return filteredFonts
+    }
+    
+    func fontConformsToOtherOptions(font:Font)-> Bool {
+        switch self.otherOptionsTable.selectedRow {
+        case 1:
+            return self.installer.installedFonts.contains(font.fileName!)
+        case 2:
+            return !self.installer.installedFonts.contains(font.fileName!)
+        case 3:
+            return !FileManager.default.fileExists(atPath: font.path!)
+        case 4:
+            return FileManager.default.fileExists(atPath: font.path!)
+        default:
+            return true
+        }
+    }
+    
+    func tagsSelected()-> [Tag] {
+        var tags = [Tag]()
+        let selectedRows = (Array(self.tagTable.selectedRowIndexes) as [Int])
+        if selectedRows.count > 0 {
+            for row in selectedRows {
+                tags.append(self.dataManager.allTags()[row])
+            }
+        } else {
+            tags = self.dataManager.allTags().sorted(by: { $0.name!.lowercased() < $1.name!.lowercased() })
+        }
+        return tags
+    }
+    
+//================INDIVIDUAL FONT STUFF ==============
+    
+    func tagsForSelected()-> [Tag] {
+        var tags = [Tag]()
+        var fonts = self.fontsSelected()
+        
+        if fonts.count > 0 {
+            tags = Array(fonts[0].tags!) as! [Tag]
+            fonts.remove(at: 0)
+            for font in fonts {
+                let fontTags = Array(font.tags!) as! [Tag]
+                for tag in tags {
+                    var index = 0
+                    if !fontTags.contains(tag){
+                        tags.remove(at: index)
+                    }
+                    index += 1
+                }
+            }
+        }
+        return tags.sorted(by: { $0.name!.lowercased() < $1.name!.lowercased() })
+    }
+    
+    func fontsSelected()-> [Font] {
+        var fonts = [Font]()
+        let selectedRows = Array(self.outlineView.selectedRowIndexes)
+        for row in selectedRows {
+            if let family = self.outlineView.item(atRow: row) as? FontFamily {
+                
+                for font in self.fontsDisplayed[family]! {
+                    if !fonts.contains(font){
+                        fonts.append(font)
+                    }
+                }
+            } else if let font = self.outlineView.item(atRow: row) as? Font {
+                if !fonts.contains(font){
+                    fonts.append(font)
+                }
+            }
+        }
+        return fonts
+    }
+    
+//================INSTALL/REMOVE FONT BUTTONS =======================
+    
+    @IBAction func installPressed(_ sender: Any) {
+        self.installButton.isEnabled = false
+        self.installer.installFonts(fonts: self.fontsSelected())
+    }
+    
+    @IBAction func removePressed(_ sender: Any) {
+        self.removeButton.isEnabled = false
+        self.installer.removeFonts(fonts: self.fontsSelected())
+    }
+    
+    
+    
+    
+//=============== CHOOSE FONT DIRECTORY ======================
+    
+    @IBAction func directoryPressed(_ sender: Any) {
+        self.installer.chooseSystemFontDirectory()
+    }
+    
+    func directoryPanel(message:String, url:String)-> NSOpenPanel {
+        let panel = NSOpenPanel()
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
+        panel.message = message
+        panel.directoryURL = URL(string:url)
+        return panel
+    }
+    
+   
+    
+    
+//================ TABLE DATA ==================
+    func numberOfRows(in tableView: NSTableView) -> Int {
+        if tableView == self.installedFontsTable {
+            return self.installer.installedFonts.count
+        } else if tableView == self.tagTable {
+            return self.dataManager.allTags().count
+        } else if tableView == self.singleTagTable {
+            return self.tagsForSelected().count
+        } else if tableView == self.otherOptionsTable {
+            return 5
+        }
+        return 0
+    }
+    
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        let cell = tableView.makeView(withIdentifier: tableColumn!.identifier, owner: self) as! CustomCell
+        
+        if tableView == self.installedFontsTable {
+            cell.textField!.stringValue = self.installer.installedFonts[row]
+        } else if tableView == self.tagTable {
+            cell.table = self.tagTable
+            cell.fontTag = self.dataManager.allTags()[row]
+            cell.textField!.stringValue = cell.fontTag!.name!
+            NotificationCenter.default.addObserver(self, selector: #selector(textDidEndEditing(_:)), name: NSControl.textDidEndEditingNotification, object: cell.textField!)
+        } else if tableView == self.singleTagTable {
+                cell.fontTag = self.tagsForSelected()[row]
+                cell.table = self.singleTagTable
+                cell.textField!.stringValue = cell.fontTag!.name!
+                NotificationCenter.default.addObserver(self, selector: #selector(textDidEndEditing(_:)), name: NSControl.textDidEndEditingNotification, object: cell.textField!)
+        } else if tableView == self.otherOptionsTable {
+            let text = ["All",  "Installed", "Not Installed","Missing", "Not Missing"]
+            cell.textField!.stringValue = text[row]
+        }
+    
+        return cell
+    }
+    
+    func tableViewSelectionDidChange(_ notification: Notification) {
+        let tableView = notification.object as! NSTableView
+        if tableView == self.tagTable || tableView == self.otherOptionsTable {
+            self.populateFontWindow()
+        }
+    }
+    
+    func tableView(_ tableView: NSTableView, mouseDownInHeaderOf tableColumn: NSTableColumn) {
+        tableView.deselectAll(self)
+    }
+    
+    func textDidEndEditing(_ notification: Notification) {
+        if let object = notification.object as? NSTextField {
+        if let cell = object.superview as? CustomCell {
+            if cell.table == self.singleTagTable {
+                if cell.textField!.stringValue != cell.fontTag!.name! {
+                    if cell.textField!.stringValue != "" {
+                        self.dataManager.addTag(name: cell.textField!.stringValue, type: "User Tag", fonts: self.fontsSelected())
+                    }
+                    self.dataManager.removeTag(tag: cell.fontTag!, fonts: self.fontsSelected())
+                }
+            } else if cell.table == self.tagTable {
+                if cell.textField!.stringValue != cell.fontTag!.name! {
+                    if cell.textField!.stringValue != "" {
+                        
+                        self.dataManager.addTag(name: cell.textField!.stringValue, type: "User Tag", fonts: Array(cell.fontTag!.fonts!) as! [Font])
+                        self.dataManager.removeTag(tag: cell.fontTag!, fonts: Array(cell.fontTag!.fonts!) as! [Font])
+                    } else {
+                        if self.confirmed("Delete Tag?", detail: "Are you sure you want to delete this tag? No backsies!") {
+                            self.dataManager.removeTag(tag: cell.fontTag!, fonts: Array(cell.fontTag!.fonts!) as! [Font])
+                        } else {
+                            cell.textField!.stringValue = cell.fontTag!.name!
+                        }
+                    }
+                }
+            }
+            NotificationCenter.default.removeObserver(self, name: NSControl.textDidEndEditingNotification, object: notification.object)
+            self.singleTagTable.reloadData()
+            self.tagTable.reloadData()
+        }
+        }
+    }
+    
+   
+    
+    @IBAction func didEnterNewTag(_ sender: NSTextField) {
+        if sender.stringValue != "" {
+            self.dataManager.addTag(name: sender.stringValue, type: "User Tag", fonts: self.fontsSelected())
+        }
+        sender.stringValue = ""
+        self.singleTagTable.reloadData()
+        self.tagTable.reloadData()
+    }
+    
+    @IBAction func didEnterFilterChars(_ sender: Any) {
+        self.reloadAll()
+    }
+    
+
+//=============== ADD/REMOVE FOLDERS ==========
+    
+    @IBAction func removeFolderPressed(_ sender: Any) {
+        if self.confirmed("Remove this folder?", detail: "All font data it contains will be deleted from this manager (this will not affect the files on your hard disk)") {
+            self.importer.removeFolders(self.selectedDirectories())
+        }
+    }
+    
+    @IBAction func newFolderPressed(_ sender: Any) {
+        self.importer.chooseFontDirectory()
+    }
+    
+    
+    
+//=============== ENABLE DISABLE ===============
+    
+    func enableDisableEverything(_ enable:Bool) {
+        self.enableDisableControls(self.allButtons, enable)
+        self.enableDisableControls(self.allTextFields, enable)
+        self.enableDisableControls(self.allTables, enable)
+        if enable == true {
+            self.toggleRemove()
+            self.toggleInstallRemove()
+        }
+    }
+    
+    func enableDisableControls(_ controls:[NSControl], _ enable:Bool){
+        for control in controls {
+            control.isEnabled = enable
+        }
+    }
+    
+    
+    func toggleRemove() {
+        self.removeFolder.isEnabled = self.selectedDirectories().count > 0
+    }
+    
+    func toggleInstallRemove() {
+        let fonts = self.fontsSelected()
+        if fonts.count != 0 && !self.fontsMissing(fonts: fonts){
+            self.installButton.isEnabled = !self.installer.fontsInstalled(fonts: fonts)
+            self.removeButton.isEnabled = self.installer.fontsInstalled(fonts: fonts, any:true)
+        } else {
+            self.installButton.isEnabled = false
+            self.removeButton.isEnabled = false
+        }
+    }
+    
+//=============== ALERTS HANDLING =============
+    func errorAlert(_ title:String, detail:String) {
+        DispatchQueue.main.async {
+            let alert = NSAlert()
+            alert.messageText = title
+            alert.informativeText = detail
+            alert.addButton(withTitle: "OK")
+            alert.runModal()
+        }
+    }
+    
+    func confirmed(_ title:String, detail:String)-> Bool {
+            let alert = NSAlert()
+            alert.messageText = title
+            alert.informativeText = detail
+            alert.alertStyle = NSAlert.Style.warning
+            alert.addButton(withTitle: "Do it anyway")
+            alert.addButton(withTitle: "Cancel")
+            let res = alert.runModal()
+            if res == NSApplication.ModalResponse.alertFirstButtonReturn {
+                return true
+            }
+            return false
+    }
+    
+    func errorFromArray(title:String, errors:[String]) {
+        if errors.count > 0 {
+            var errorString = ""
+            for error in errors {
+                errorString += error + "\n"
+            }
+            self.errorAlert(title, detail: errorString)
+        }
+    }
+//==============UPDATES=====================
+    
+    func reloadAll() {
+        print("reloading all data")
+        self.folderTree.reloadData()
+        self.tagTable.reloadData()
+        self.populateFontWindow()
+        self.reloadFontView()
+        self.installedFontsTable.reloadData()
+    }
+}
+
+extension ViewController: NSOutlineViewDataSource {
+    func outlineView(_ outlineView: NSOutlineView, numberOfChildrenOfItem item: Any?) -> Int {
+        if outlineView == self.outlineView {
+            if let family = item as? FontFamily {
+                return self.fontsDisplayed[family]!.count
+            }
+            return self.familyKeys.count
+        } else {
+            
+            if let md = item as? FontFolder {
+                return md.subFolders!.count
+            }
+            return self.dataManager.allMainDirectories().count
+        }
+        
+    }
+    
+    func outlineView(_ outlineView: NSOutlineView, child index: Int, ofItem item: Any?) -> Any {
+        if outlineView == self.outlineView {
+            if let family = item as? FontFamily {
+                let fonts = self.fontsDisplayed[family]!.sorted(by: { $0.name!.lowercased() < $1.name!.lowercased() })
+                return fonts[index]
+            }
+            return self.familyKeys[index]
+        } else {
+            if let directory = item as? FontFolder {
+                let subFolders = (Array(directory.subFolders!) as! [FontFolder]).sorted(by: { $0.name!.lowercased() < $1.name!.lowercased() })
+               
+                return subFolders[index]
+            }
+            return self.dataManager.allMainDirectories()[index]
+        }
+    }
+    
+    func outlineView(_ outlineView: NSOutlineView, isItemExpandable item: Any) -> Bool {
+        if outlineView == self.outlineView {
+            if let family = item as? FontFamily {
+                return self.fontsDisplayed[family]!.count > 1
+            }
+        } else {
+            if let directory = item as? FontFolder {
+                return directory.subFolders!.count > 0
+            }
+        }
+        return false
+    }
+}
+
+extension ViewController: NSOutlineViewDelegate {
+    func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
+        var view:NSTableCellView?
+        if outlineView == self.outlineView {
+            view = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "FontCell"), owner: self) as? NSTableCellView
+            
+            var installed = false
+            var missing = false
+            
+            if let textField = view?.textField {
+                if let family = item as? FontFamily {
+                    let fonts = self.fontsDisplayed[family]!
+                    if fonts.count < 2 && fonts.count > 0 {
+                        let font = fonts[0]
+                        textField.stringValue = font.name!
+                    } else {
+                        textField.stringValue = family.name!
+                    }
+                    installed = self.installer.fontsInstalled(fonts: fonts)
+                    missing = self.fontsMissing(fonts: fonts)
+                } else if let font = item as? Font{
+                    textField.stringValue = "---" + font.name!.lastSection()
+                    installed = self.installer.fontsInstalled(fonts: [font])
+                    missing = self.fontsMissing(fonts: [font])
+                }
+                
+                //Text Color
+                if installed {
+                    textField.textColor = NSColor.green
+                } else if missing {
+                    textField.textColor = NSColor.red
+                } else {
+                    textField.textColor = NSColor.black
+                }
+                self.singleTagTable.reloadData()
+            }
+        } else {
+            
+            view = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "FolderCell"), owner: self) as? NSTableCellView
+            if let textField = view?.textField {
+            
+                if let directory = item as? FontFolder {
+                    view!.imageView!.image = directory.path!.finderIcon()
+                    textField.stringValue = directory.name!
+                }
+            }
+        }
+        
+        return view
+    }
+    
+    func outlineViewSelectionDidChange(_ notification: Notification) {
+        let outline = notification.object as! NSOutlineView
+        self.singleTagTable.reloadData()
+        if outline == self.outlineView {
+            self.toggleInstallRemove()
+            self.tagAdder.isEnabled = self.outlineView.numberOfSelectedRows > 0
+            if outline == self.outlineView && self.outlineView.numberOfSelectedRows == 1 {
+                let selectedRow = self.outlineView.selectedRow
+                var font:Font!
+                if let item = outlineView.item(atRow: selectedRow) as? FontFamily {
+                    if let regFont = item.regular() {
+                        font = regFont
+                    } else {
+                        font = self.fontsDisplayed[item]![0]
+                    }
+                } else if let item = outlineView.item(atRow: selectedRow) as? Font {
+                    font = item
+                }
+                if let typeface = font.path!.nsFont(self){
+                    self.displayedFont = typeface
+                    self.fontUpDisplay()
+                }
+            }
+            print("going to toggle")
+            self.toggleInstallRemove()
+        } else if outline == self.folderTree {
+            self.toggleRemove()
+            self.populateFontWindow()
+        }
+    }
+    
+    func reloadFontView() {
+        self.outlineView.reloadData()
+        self.singleTagTable.reloadData()
+        self.toggleInstallRemove()
+        self.tagAdder.isEnabled = self.outlineView.numberOfSelectedRows > 0
+    }
+    
+    func outlineView(_ outlineView: NSOutlineView, mouseDownInHeaderOf tableColumn: NSTableColumn) {
+        outlineView.deselectAll(self)
+    }
+    
+    
+    
+    func fontsMissing(fonts:[Font], _ any:Bool = false)-> Bool {
+        
+        for font in fonts {
+            if FileManager.default.fileExists(atPath: font.path!) == !any {
+                return any
+            } else {
+                print("missing font at \(font.path!)")
+            }
+        }
+        return !any
+    }
+    
+    
+}
+
+extension ViewController: NSTextViewDelegate {
+    
+        func textDidChange(_ notification: Notification) {
+            guard let textView = notification.object as? NSTextView else { return }
+            if textView == self.fontDisplay {
+                self.fontUpDisplay()
+            }
+        }
+    
+    func fontUpDisplay() {
+        self.fontDisplay.textStorage?.setAttributedString(self.displayedFont.supportString(self.fontDisplay.string))
+        self.fontDisplay.font = self.displayedFont
+    }
+}
+
+
