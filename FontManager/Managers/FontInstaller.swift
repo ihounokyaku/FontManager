@@ -13,7 +13,7 @@ class FontInstaller: NSObject {
     var fontFolderPath = ""
     var installedFonts = [String]()
 
-//============== SET MAIN DIRECTORY==============================
+    //MARK: ============== SET MAIN DIRECTORY==============================
     
     func setFontDirectory() {
         if let folderURL = UserDefaults.standard.value(forKey: "fontFolderURL") as? String {
@@ -56,7 +56,7 @@ class FontInstaller: NSObject {
         let fontFolderURL = URL(fileURLWithPath: self.fontFolderPath)
         if fontFolderURL.hasDirectoryPath {
             let (fontsInstalled,_ ) = self.delegate.importer.getFontFiles(folderUrl: fontFolderURL)
-            self.installedFonts = fontsInstalled.map { return $0.deletingPathExtension().lastPathComponent }
+            self.installedFonts = fontsInstalled.map { return $0.lastPathComponent }
             self.installedFonts = self.installedFonts.sorted(by: { $0.lowercased() < $1.lowercased() })
         } else {
             print("fontFolder does not have directory fontFolder is: \(fontFolderURL.path)")

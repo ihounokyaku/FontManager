@@ -135,7 +135,7 @@ extension NSFont {
                 let r:CGFloat = 200
                 let g:CGFloat = 0
                 let b:CGFloat = 0
-                let a:CGFloat = 0.2
+                let a:CGFloat = 0.8
                 let color = NSColor(red: r, green: g, blue: b, alpha: a)
                 let attcha = NSMutableAttributedString(string: String(scalar), attributes: [NSAttributedStringKey.foregroundColor:color, NSAttributedStringKey.strikethroughStyle:NSUnderlineStyle.styleSingle.rawValue])
                 attString.append(attcha)
@@ -160,3 +160,11 @@ extension Font {
         return false
     }
 }
+
+extension NSTableView : NSMenuDelegate {
+    
+}
+//extension NSOutlineView : NSMenuDelegate {
+//    
+//}
+

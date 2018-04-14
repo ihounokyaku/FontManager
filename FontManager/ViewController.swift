@@ -50,7 +50,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     var displayedFont = NSFont.systemFont(ofSize: 30)
     
     
-//===================ON LOAD=============================
+    //MARK: ===================ON LOAD=============================
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -65,6 +65,11 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
             table.dataSource = self
             table.delegate = self
         }
+        
+        //-----Set Contextual Menus
+        self.installedFontsTable.menu = self.tableMenu(withDelegate:self.installedFontsTable)
+        self.outlineView.menu = self.tableMenu(withDelegate: self.outlineView)
+        
         self.installer.delegate = self
         self.dataManager.delegate = self
         self.importer.delegate = self
@@ -82,6 +87,12 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         self.installer.getInstalledFonts()
     }
     
+    func tableMenu(withDelegate delegate:NSMenuDelegate)-> NSMenu {
+        let menu = NSMenu()
+        menu.addItem(NSMenuItem(title: "Show in finder", action: #selector(showInFinderClicked(_:)), keyEquivalent: ""))
+        menu.delegate = delegate
+        return menu
+    }
 //====================== GET/SET FOLDERS ===================================
     
     
@@ -322,7 +333,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
    
     
     
-//================ TABLE DATA ==================
+    //MARK: ================ TABLE DATA ==================
     func numberOfRows(in tableView: NSTableView) -> Int {
         if tableView == self.installedFontsTable {
             return self.installer.installedFonts.count
@@ -341,6 +352,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         
         if tableView == self.installedFontsTable {
             cell.textField!.stringValue = self.installer.installedFonts[row]
+            
         } else if tableView == self.tagTable {
             cell.table = self.tagTable
             cell.fontTag = self.dataManager.allTags()[row]
@@ -510,6 +522,57 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         self.reloadFontView()
         self.installedFontsTable.reloadData()
     }
+    
+    
+    //MARK: ================Contextual Menu=========================
+    
+    
+    @IBAction func showInFinderClicked(_ sender: NSMenuItem) {
+        var filePaths = [String]()
+        
+        if let table = sender.menu!.delegate as? NSTableView, table == self.installedFontsTable {
+            filePaths.append(self.installer.fontFolderPath + "/" + self.installer.installedFonts[table.clickedRow])
+        } else if let outline = sender.menu!.delegate as? NSOutlineView {
+            let item = self.outlineView.item(atRow: self.outlineView.clickedRow)
+            if let font = item as? Font {
+                filePaths.append(font.path!)
+            } else if let f = item as? FontFamily {
+                filePaths = (Array(f.fonts!) as! [Font]).map{return $0.path!}
+            }
+        }
+
+        self.showInFinder(paths:filePaths)
+    }
+    
+    
+    
+    func showInFinder(paths:[String]) {
+        
+        var validURLs = [URL]()
+        var errors = [String]()
+        
+        for path in paths {
+            let url = URL(fileURLWithPath: path)
+            if url.isFileURL && FileManager.default.fileExists(atPath: path){
+                validURLs.append(url)
+            } else {
+                errors.append("\(path)\n")
+            }
+        }
+        
+        //check valid
+        if validURLs.count > 0 {
+            NSWorkspace.shared.activateFileViewerSelecting(validURLs)
+        }
+        //show errors
+        if errors.count > 0 {
+            self.errorFromArray(title: "Could not find the following files:", errors: errors)
+        }
+    }
+    
+    
+    
+    
 }
 
 extension ViewController: NSOutlineViewDataSource {
@@ -560,7 +623,12 @@ extension ViewController: NSOutlineViewDataSource {
     }
 }
 
+
+
 extension ViewController: NSOutlineViewDelegate {
+    
+    
+    
     func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
         var view:NSTableCellView?
         if outlineView == self.outlineView {
@@ -666,7 +734,6 @@ extension ViewController: NSOutlineViewDelegate {
         }
         return !any
     }
-    
     
 }
 

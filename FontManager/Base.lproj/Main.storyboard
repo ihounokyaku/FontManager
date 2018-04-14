@@ -1267,6 +1267,16 @@
                     </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <menu identifier="outlineView" id="tag-D0-ZdA">
+                    <items>
+                        <menuItem title="Show in Finder" id="j3i-sf-ohD">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="showInFinderClicked:" target="XfG-lQ-9wD" id="enl-0v-8Kn"/>
+                            </connections>
+                        </menuItem>
+                    </items>
+                </menu>
             </objects>
             <point key="canvasLocation" x="89" y="1131.5"/>
         </scene>
