@@ -25,6 +25,13 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     @IBOutlet weak var addFolderButton: NSButton!
     @IBOutlet weak var removeFolder: NSButton!
     @IBOutlet weak var removeButton: NSButton!
+    @IBOutlet weak var addTagButton: NSButton!
+    
+    @IBOutlet weak var clearAllTagSelection: NSButton!
+    @IBOutlet weak var deleteAllTagSelection: NSButton!
+    @IBOutlet weak var clearFontTagSelection: NSButton!
+    @IBOutlet weak var deleteFontTagSelection: NSButton!
+    
     @IBOutlet weak var installButton: NSButton!
     @IBOutlet var fontDisplay: NSTextView!
     @IBOutlet weak var statusLabel: NSTextField!
@@ -57,7 +64,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         
         //-----Create Arrays---------
         self.allTables = [self.outlineView, self.folderTree, self.tagTable, self.singleTagTable, self.otherOptionsTable, self.installedFontsTable]
-        self.allButtons = [self.removeFolder, self.removeButton, self.installButton, self.addFolderButton]
+        self.allButtons = [self.removeFolder, self.removeButton, self.installButton, self.addFolderButton, self.clearAllTagSelection, self.clearFontTagSelection, self.deleteAllTagSelection, self.deleteFontTagSelection, self.addTagButton]
         self.allTextFields = [self.characterFilterBox, self.tagAdder]
         
         //-----Assign Delegates-------
@@ -67,9 +74,13 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         }
         
         //-----Set Contextual Menus
-        self.installedFontsTable.menu = self.tableMenu(withDelegate:self.installedFontsTable)
-        self.outlineView.menu = self.tableMenu(withDelegate: self.outlineView)
-        self.folderTree.menu = self.tableMenu(withDelegate: self.folderTree)
+
+        self.singleTagTable.menu = self.tableMenu(withDelegate: self.singleTagTable, andItems: [self.tableMenuItem(ofType: .remove)])
+        self.tagTable.menu = self.tableMenu(withDelegate: self.tagTable, andItems: [self.tableMenuItem(ofType: .remove)])
+        
+        self.installedFontsTable.menu = self.tableMenu(withDelegate:self.installedFontsTable, andItems:[self.tableMenuItem(ofType: .showInFinder)])
+        self.outlineView.menu = self.tableMenu(withDelegate: self.outlineView, andItems:[self.tableMenuItem(ofType: .showInFinder)])
+        self.folderTree.menu = self.tableMenu(withDelegate: self.folderTree, andItems:[self.tableMenuItem(ofType: .showInFinder)])
         
         
         self.installer.delegate = self
@@ -89,12 +100,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         self.installer.getInstalledFonts()
     }
     
-    func tableMenu(withDelegate delegate:NSMenuDelegate)-> NSMenu {
-        let menu = NSMenu()
-        menu.addItem(NSMenuItem(title: "Show in finder", action: #selector(showInFinderClicked(_:)), keyEquivalent: ""))
-        menu.delegate = delegate
-        return menu
-    }
+    
 //====================== GET/SET FOLDERS ===================================
     
     
@@ -363,6 +369,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         } else if tableView == self.singleTagTable {
                 cell.fontTag = self.tagsForSelected()[row]
                 cell.table = self.singleTagTable
+            
                 cell.textField!.stringValue = cell.fontTag!.name!
                 NotificationCenter.default.addObserver(self, selector: #selector(textDidEndEditing(_:)), name: NSControl.textDidEndEditingNotification, object: cell.textField!)
         } else if tableView == self.otherOptionsTable {
@@ -373,11 +380,14 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         return cell
     }
     
+   
+    
     func tableViewSelectionDidChange(_ notification: Notification) {
         let tableView = notification.object as! NSTableView
         if tableView == self.tagTable || tableView == self.otherOptionsTable {
             self.populateFontWindow()
         }
+        self.toggleTagButtons()
     }
     
     func tableView(_ tableView: NSTableView, mouseDownInHeaderOf tableColumn: NSTableColumn) {
@@ -417,7 +427,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     }
     
    
-    
+    //MARK: - RELATED METHODS
     @IBAction func didEnterNewTag(_ sender: NSTextField) {
         if sender.stringValue != "" {
             self.dataManager.addTag(name: sender.stringValue, type: "User Tag", fonts: self.fontsSelected())
@@ -430,6 +440,56 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     @IBAction func didEnterFilterChars(_ sender: Any) {
         self.reloadAll()
     }
+    
+    
+    @IBAction func clearSelectionPressed(_ sender: NSButton) {
+        var table:NSTableView!
+        if sender.tag == 3 {
+            table = self.tagTable
+        } else {
+            table = self.singleTagTable
+        }
+        table.deselectAll(self)
+    }
+    
+    
+    @IBAction func deleteTagPressed(_ sender: NSButton) {
+        var tagsToRemove = [Tag]()
+        var delete = false
+        var table:NSTableView!
+        
+        if sender.tag == 1 {
+            table = self.tagTable
+            delete = true
+        } else {
+            table = self.singleTagTable
+        }
+        let selected = Array(table.selectedRowIndexes)
+        for i in selected {
+            tagsToRemove.append((table.view(atColumn: 0, row: i, makeIfNecessary: false) as! CustomCell).fontTag!)
+        }
+        
+        self.removeTags(tagsToRemove, delete:delete)
+        
+    }
+    
+    func removeTags(_ tags:[Tag], delete:Bool = false) {
+        if !delete {
+            for tag in tags {
+                self.dataManager.removeTag(tag: tag, fonts: self.fontsSelected())
+            }
+            self.tagTable.reloadData()
+            self.singleTagTable.reloadData()
+        } else {
+            if self.confirmed("Delete Tag?", detail: "Are you sure you want to delete these tags? No backsies!") {
+                for tag in tags {
+                    self.dataManager.removeTag(tag: tag, fonts: Array(tag.fonts!) as! [Font])
+                }
+                self.reloadAll()
+            }
+        }
+    }
+    
     
 
 //=============== ADD/REMOVE FOLDERS ==========
@@ -446,7 +506,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     
     
     
-//=============== ENABLE DISABLE ===============
+    //MARK: - =============== ENABLE DISABLE ===============
     
     func enableDisableEverything(_ enable:Bool) {
         self.enableDisableControls(self.allButtons, enable)
@@ -454,6 +514,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         self.enableDisableControls(self.allTables, enable)
         if enable == true {
             self.toggleRemove()
+            self.toggleTagButtons()
             self.toggleInstallRemove()
         }
     }
@@ -467,6 +528,14 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     
     func toggleRemove() {
         self.removeFolder.isEnabled = self.selectedDirectories().count > 0
+        
+    }
+    
+    func toggleTagButtons() {
+        self.deleteFontTagSelection.isEnabled = self.singleTagTable.selectedRowIndexes.count > 0
+        self.clearFontTagSelection.isEnabled = self.singleTagTable.selectedRowIndexes.count > 0
+        self.deleteAllTagSelection.isEnabled = self.tagTable.selectedRowIndexes.count > 0
+        self.clearAllTagSelection.isEnabled = self.tagTable.selectedRowIndexes.count > 0
     }
     
     func toggleInstallRemove() {
@@ -529,6 +598,25 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     //MARK: ================ CONTEXTUAL MENU =========================
     
     
+    func tableMenuItem(ofType type:MenuItemType) -> NSMenuItem {
+        switch type {
+        case .remove:
+            return NSMenuItem(title: "Remove", action: #selector(removeItem(_:)), keyEquivalent: "")
+        case .showInFinder:
+            return NSMenuItem(title: "Show in finder", action: #selector(showInFinderClicked(_:)), keyEquivalent: "")
+        }
+    }
+    
+    func tableMenu(withDelegate delegate:NSMenuDelegate, andItems items:[NSMenuItem])-> NSMenu {
+        let menu = NSMenu()
+        for item in items {
+            menu.addItem(item)
+        }
+        menu.delegate = delegate
+        return menu
+    }
+    
+    //MARK: ------MENU ACTIONS
     @IBAction func showInFinderClicked(_ sender: NSMenuItem) {
         var filePaths = [String]()
         
@@ -550,6 +638,23 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         self.showInFinder(paths:filePaths)
     }
     
+    @IBAction func removeItem(_ sender: NSMenuItem) {
+        if let table = sender.menu!.delegate as? NSTableView {
+            let row = table.clickedRow
+            let cell = table.view(atColumn: 0, row: row, makeIfNecessary: false) as! CustomCell
+            
+            if table == self.singleTagTable {
+                self.dataManager.removeTag(tag: cell.fontTag!, fonts: self.fontsSelected())
+                self.tagTable.reloadData()
+                self.singleTagTable.reloadData()
+            } else if table == self.tagTable {
+                if self.confirmed("Delete Tag?", detail: "Are you sure you want to delete this tag? No backsies!") {
+                    self.dataManager.removeTag(tag: cell.fontTag!, fonts: Array(cell.fontTag!.fonts!) as! [Font])
+                    self.reloadAll()
+                }
+            }
+        }
+    }
     
     
     func showInFinder(paths:[String]) {

@@ -164,7 +164,9 @@ extension Font {
 extension NSTableView : NSMenuDelegate {
     
 }
-//extension NSOutlineView : NSMenuDelegate {
-//    
-//}
+
+enum MenuItemType {
+    case remove
+    case showInFinder
+}
 

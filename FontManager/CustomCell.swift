@@ -11,11 +11,16 @@ import Cocoa
 class CustomCell: NSTableCellView {
 
     var fontTag:Tag?
-    var font:Font?
+    //var font:Font?
     var table:NSTableView!
+    
+    @IBOutlet weak var removeButton: NSButton?
     
     override func draw(_ dirtyRect: NSRect) {
         super.draw(dirtyRect)
         // Drawing code here.
+    }
+    @IBAction func removePressed(_ sender: Any) {
+        self.textField?.stringValue = ""
     }
 }
