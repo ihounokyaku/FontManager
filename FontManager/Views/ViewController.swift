@@ -36,6 +36,8 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     @IBOutlet var fontDisplay: NSTextView!
     @IBOutlet weak var statusLabel: NSTextField!
 
+    @IBOutlet weak var exampleSegment: NSSegmentedControl!
+    
     var allTables = [NSTableView]()
     var allButtons = [NSButton]()
     var allTextFields = [NSTextField]()
@@ -338,7 +340,38 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         return panel
     }
     
-   
+    
+    //MARK: - Text Example
+    
+    @IBAction func exampleSegmentPressed(_ sender: NSSegmentedControl) {
+        if sender.selectedSegment == 0 {
+            
+            self.presentVC(id: "ExampleTextEditor")
+        } else if sender.selectedSegment == 1 {
+            self.presentVC(id: "textExampleList")
+        } else {
+            self.fontDisplay.string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"
+            UserDefaults.standard.set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890", forKey: "fontDisplay")
+        }
+    }
+    
+    
+    
+    func presentVC(id:String) {
+        let storyboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Main"), bundle: nil)
+        var controller = storyboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: id)) as! NSViewController
+        if let textExampleVC = controller as? TextExampleVC {
+            textExampleVC.delegate = self
+            controller = textExampleVC
+        } else if let view = controller as? EditTextVC {
+            print(self.fontDisplay.string)
+            view.str = self.fontDisplay.string
+            controller = view
+           
+        }
+        
+        self.presentViewControllerAsSheet(controller)
+    }
     
     
     //MARK: ================ TABLE DATA ==================
@@ -736,6 +769,15 @@ extension ViewController: NSOutlineViewDataSource {
         }
         return false
     }
+    
+    
+    //MARK: - ==============HANDLE SEGUES =================
+    
+    override func prepare(for segue: NSStoryboardSegue, sender: Any?) {
+       if let destinationVC = segue.destinationController as? TextExampleVC {
+            destinationVC.delegate = self
+        }
+    }
 }
 
 
@@ -858,6 +900,7 @@ extension ViewController: NSTextViewDelegate {
             guard let textView = notification.object as? NSTextView else { return }
             if textView == self.fontDisplay {
                 self.fontUpDisplay()
+                UserDefaults.standard.set(self.fontDisplay.string, forKey: "fontDisplay")
             }
         }
     

@@ -23,6 +23,10 @@
 		C437B415203584DC0088B1BC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C437B414203584DC0088B1BC /* Assets.xcassets */; };
 		C437B418203584DC0088B1BC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C437B416203584DC0088B1BC /* Main.storyboard */; };
 		C4704697203B0F5D00778F29 /* SelectableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4704696203B0F5D00778F29 /* SelectableCell.swift */; };
+		C4711F7B20822D9F009E62E2 /* ExampleText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4711F7A20822D9F009E62E2 /* ExampleText.swift */; };
+		C4711F8020822EE2009E62E2 /* EncodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4711F7F20822EE2009E62E2 /* EncodeManager.swift */; };
+		C4711F83208236B1009E62E2 /* TextExampleVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4711F82208236B1009E62E2 /* TextExampleVC.swift */; };
+		C4711F8920824FC4009E62E2 /* EditTextVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4711F8820824FC4009E62E2 /* EditTextVC.swift */; };
 		C4B6A459203C07D1007D42C4 /* FontFamily+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B6A457203C07D1007D42C4 /* FontFamily+CoreDataClass.swift */; };
 		C4B6A45A203C07D1007D42C4 /* FontFamily+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B6A458203C07D1007D42C4 /* FontFamily+CoreDataProperties.swift */; };
 		C4CD1BA52053A93700AE7E7A /* Fixes.rtf in Resources */ = {isa = PBXBuildFile; fileRef = C4CD1BA42053A93700AE7E7A /* Fixes.rtf */; };
@@ -50,6 +54,10 @@
 		C437B419203584DC0088B1BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C437B41A203584DC0088B1BC /* FontManager.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FontManager.entitlements; sourceTree = "<group>"; };
 		C4704696203B0F5D00778F29 /* SelectableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableCell.swift; sourceTree = "<group>"; };
+		C4711F7A20822D9F009E62E2 /* ExampleText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleText.swift; sourceTree = "<group>"; };
+		C4711F7F20822EE2009E62E2 /* EncodeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodeManager.swift; sourceTree = "<group>"; };
+		C4711F82208236B1009E62E2 /* TextExampleVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextExampleVC.swift; sourceTree = "<group>"; };
+		C4711F8820824FC4009E62E2 /* EditTextVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTextVC.swift; sourceTree = "<group>"; };
 		C4B6A457203C07D1007D42C4 /* FontFamily+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontFamily+CoreDataClass.swift"; sourceTree = "<group>"; };
 		C4B6A458203C07D1007D42C4 /* FontFamily+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontFamily+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		C4CD1BA42053A93700AE7E7A /* Fixes.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Fixes.rtf; sourceTree = "<group>"; };
@@ -73,6 +81,7 @@
 			children = (
 				C42E9BF62041716A00A2AE68 /* FontInstaller.swift */,
 				C42601A52036D9250026142D /* CoreDataManager.swift */,
+				C4711F7F20822EE2009E62E2 /* EncodeManager.swift */,
 				C42E9BF9204185EB00A2AE68 /* FontImporter.swift */,
 			);
 			path = Managers;
@@ -99,10 +108,11 @@
 		C437B40C203584DC0088B1BC /* FontManager */ = {
 			isa = PBXGroup;
 			children = (
+				C4711F7C20822E2B009E62E2 /* DataModel */,
 				C40FE8072036D37C008541C0 /* Extensions.swift */,
 				C416860420405AD800B3E562 /* CustomCell.swift */,
 				C437B40D203584DC0088B1BC /* AppDelegate.swift */,
-				C437B40F203584DC0088B1BC /* ViewController.swift */,
+				C4711F81208233BC009E62E2 /* Views */,
 				C42E9BF8204185BA00A2AE68 /* Managers */,
 				C4704696203B0F5D00778F29 /* SelectableCell.swift */,
 				C42E9BFB2042AB1100A2AE68 /* DraggableClip.swift */,
@@ -110,9 +120,27 @@
 				C437B416203584DC0088B1BC /* Main.storyboard */,
 				C437B419203584DC0088B1BC /* Info.plist */,
 				C437B41A203584DC0088B1BC /* FontManager.entitlements */,
-				C437B411203584DC0088B1BC /* FontManager.xcdatamodeld */,
 			);
 			path = FontManager;
+			sourceTree = "<group>";
+		};
+		C4711F7C20822E2B009E62E2 /* DataModel */ = {
+			isa = PBXGroup;
+			children = (
+				C4711F7A20822D9F009E62E2 /* ExampleText.swift */,
+				C437B411203584DC0088B1BC /* FontManager.xcdatamodeld */,
+			);
+			path = DataModel;
+			sourceTree = "<group>";
+		};
+		C4711F81208233BC009E62E2 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C4711F8820824FC4009E62E2 /* EditTextVC.swift */,
+				C437B40F203584DC0088B1BC /* ViewController.swift */,
+				C4711F82208236B1009E62E2 /* TextExampleVC.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		C49AC8D9207F84E200C53F5B /* Data Model */ = {
@@ -221,9 +249,13 @@
 				C4B6A45A203C07D1007D42C4 /* FontFamily+CoreDataProperties.swift in Sources */,
 				C42E9BFA204185EB00A2AE68 /* FontImporter.swift in Sources */,
 				C42E9BFC2042AB1100A2AE68 /* DraggableClip.swift in Sources */,
+				C4711F83208236B1009E62E2 /* TextExampleVC.swift in Sources */,
 				C42601AD2036DBE70026142D /* Font+CoreDataClass.swift in Sources */,
+				C4711F8020822EE2009E62E2 /* EncodeManager.swift in Sources */,
 				C42601A62036D9250026142D /* CoreDataManager.swift in Sources */,
 				C42601AE2036DBE70026142D /* Font+CoreDataProperties.swift in Sources */,
+				C4711F8920824FC4009E62E2 /* EditTextVC.swift in Sources */,
+				C4711F7B20822D9F009E62E2 /* ExampleText.swift in Sources */,
 				C40FE8082036D37C008541C0 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
