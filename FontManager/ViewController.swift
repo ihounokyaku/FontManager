@@ -69,6 +69,8 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         //-----Set Contextual Menus
         self.installedFontsTable.menu = self.tableMenu(withDelegate:self.installedFontsTable)
         self.outlineView.menu = self.tableMenu(withDelegate: self.outlineView)
+        self.folderTree.menu = self.tableMenu(withDelegate: self.folderTree)
+        
         
         self.installer.delegate = self
         self.dataManager.delegate = self
@@ -524,20 +526,24 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     }
     
     
-    //MARK: ================Contextual Menu=========================
+    //MARK: ================ CONTEXTUAL MENU =========================
     
     
     @IBAction func showInFinderClicked(_ sender: NSMenuItem) {
         var filePaths = [String]()
         
+        
         if let table = sender.menu!.delegate as? NSTableView, table == self.installedFontsTable {
             filePaths.append(self.installer.fontFolderPath + "/" + self.installer.installedFonts[table.clickedRow])
         } else if let outline = sender.menu!.delegate as? NSOutlineView {
-            let item = self.outlineView.item(atRow: self.outlineView.clickedRow)
+            let item = outline.item(atRow: outline.clickedRow)
+            print(outline.clickedRow)
             if let font = item as? Font {
                 filePaths.append(font.path!)
             } else if let f = item as? FontFamily {
                 filePaths = (Array(f.fonts!) as! [Font]).map{return $0.path!}
+            } else if let f = item as? FontFolder {
+                filePaths.append(f.path!)
             }
         }
 
@@ -554,6 +560,10 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         for path in paths {
             let url = URL(fileURLWithPath: path)
             if url.isFileURL && FileManager.default.fileExists(atPath: path){
+                if url.hasDirectoryPath {
+                    NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: path)
+                    return
+                }
                 validURLs.append(url)
             } else {
                 errors.append("\(path)\n")
