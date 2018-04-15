@@ -842,6 +842,7 @@ extension ViewController: NSOutlineViewDelegate {
         if outline == self.outlineView {
             self.toggleInstallRemove()
             self.tagAdder.isEnabled = self.outlineView.numberOfSelectedRows > 0
+            self.addTagButton.isEnabled = self.outlineView.numberOfSelectedRows > 0
             if outline == self.outlineView && self.outlineView.numberOfSelectedRows == 1 {
                 let selectedRow = self.outlineView.selectedRow
                 var font:Font!
@@ -872,6 +873,7 @@ extension ViewController: NSOutlineViewDelegate {
         self.singleTagTable.reloadData()
         self.toggleInstallRemove()
         self.tagAdder.isEnabled = self.outlineView.numberOfSelectedRows > 0
+        self.addTagButton.isEnabled = self.outlineView.numberOfSelectedRows > 0
     }
     
     func outlineView(_ outlineView: NSOutlineView, mouseDownInHeaderOf tableColumn: NSTableColumn) {

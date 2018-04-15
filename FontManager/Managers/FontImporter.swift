@@ -78,7 +78,7 @@ class FontImporter: NSObject {
                 if index == fontURLs.count {
                     
                     DispatchQueue.main.async {
-                        self.updateFontUrls(fonts: newFonts)
+                        self.updateFontUrls(fonts: newFonts, folderPath: url.path)
                         self.delegate.statusLabel.stringValue = ""
                         self.delegate.errorFromArray(title: "Could not get the following fonts:", errors: errors)
                         self.delegate.getAllFonts()
@@ -97,19 +97,18 @@ class FontImporter: NSObject {
         
         for fontObject in fonts {
             var font:Font!
-            var path = fontObject["path"] as! String
-            var subdirectory = fontObject["subdirectory"] as! String
+            let path = fontObject["path"] as! String
+            let subdirectory = fontObject["subdirectory"] as? String
             
             if let nsFont = fontObject["font"] as? NSFont {
                 //- create new font from NSFont
                 font = self.delegate.dataManager.newFont(fontFile:nsFont, path: path)
             } else {
                 font = fontObject["font"] as! Font
-                
+                font.path = path
             }
-            
             self.delegate.dataManager.recordDirectories(mainDirectory: folderPath, subDirectory: subdirectory, font: font)
-            
+            self.delegate.dataManager.saveContext()
         }
         
     }
