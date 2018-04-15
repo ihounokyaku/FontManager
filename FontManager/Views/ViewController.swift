@@ -29,6 +29,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     @IBOutlet weak var removeFolder: NSButton!
     @IBOutlet weak var removeButton: NSButton!
     @IBOutlet weak var addTagButton: NSButton!
+    @IBOutlet weak var newProjectButton: NSButton!
     
     @IBOutlet weak var clearAllTagSelection: NSButton!
     @IBOutlet weak var deleteAllTagSelection: NSButton!
@@ -69,7 +70,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         
         //-----Create Arrays---------
         self.allTables = [self.outlineView, self.folderTree, self.tagTable, self.singleTagTable, self.otherOptionsTable, self.installedFontsTable]
-        self.allButtons = [self.removeFolder, self.removeButton, self.installButton, self.addFolderButton, self.clearAllTagSelection, self.clearFontTagSelection, self.deleteAllTagSelection, self.deleteFontTagSelection, self.addTagButton, self.refreshButton]
+        self.allButtons = [self.removeFolder, self.removeButton, self.installButton, self.addFolderButton, self.clearAllTagSelection, self.clearFontTagSelection, self.deleteAllTagSelection, self.deleteFontTagSelection, self.addTagButton, self.refreshButton, self.newProjectButton]
         self.allTextFields = [self.characterFilterBox, self.tagAdder]
         
         //-----Assign Delegates-------
@@ -275,7 +276,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         return tags
     }
     
-//================INDIVIDUAL FONT STUFF ==============
+    //MARK: - ================INDIVIDUAL FONT STUFF ==============
     
     func tagsForSelected()-> [Tag] {
         var tags = [Tag]()
@@ -382,8 +383,20 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         self.presentViewControllerAsSheet(controller)
     }
     
+    //MARK: - ===============PROJECT STUFF =================
     
-    //MARK: ================ TABLE DATA ==================
+    @IBAction func newProjectPressed(_ sender: Any) {
+        let projectEncoder = ProjectEncoder()
+        let projectName = self.newProjectAlert()
+        if projectName != "" {
+            let fontNames = self.fontsSelected().map{return $0.name!}
+            projectEncoder.newProject(name: projectName, fonts: fontNames)
+        }
+    }
+    
+    
+    
+    //MARK: - ================ TABLE DATA ==================
     func numberOfRows(in tableView: NSTableView) -> Int {
         if tableView == self.installedFontsTable {
             return self.installer.installedFonts.count
@@ -558,6 +571,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
             self.toggleRemove()
             self.toggleTagButtons()
             self.toggleInstallRemove()
+            self.toggleProjectButtons()
         }
     }
     
@@ -580,6 +594,10 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         self.clearAllTagSelection.isEnabled = self.tagTable.selectedRowIndexes.count > 0
     }
     
+    func toggleProjectButtons() {
+        self.newProjectButton.isEnabled = self.outlineView.selectedRowIndexes.count > 0
+    }
+    
     func toggleInstallRemove() {
         let fonts = self.fontsSelected()
         if fonts.count != 0 && !self.fontsMissing(fonts: fonts){
@@ -591,7 +609,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         }
     }
     
-//=============== ALERTS HANDLING =============
+    //MARK: - =============== ALERTS HANDLING =============
     func errorAlert(_ title:String, detail:String) {
         DispatchQueue.main.async {
             let alert = NSAlert()
@@ -624,6 +642,17 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
             }
             self.errorAlert(title, detail: errorString)
         }
+    }
+    
+    func newProjectAlert()-> String {
+        let alert = NewProjectPopup()
+        let response: NSApplication.ModalResponse = alert.runModal()
+        if (response == NSApplication.ModalResponse.alertFirstButtonReturn) {
+            return (alert.accessoryView as! NSTextView).string
+        } else {
+            return ""
+        }
+        
     }
 //==============UPDATES=====================
     
@@ -854,6 +883,7 @@ extension ViewController: NSOutlineViewDelegate {
         self.singleTagTable.reloadData()
         if outline == self.outlineView {
             self.toggleInstallRemove()
+            self.toggleProjectButtons()
             self.tagAdder.isEnabled = self.outlineView.numberOfSelectedRows > 0
             self.addTagButton.isEnabled = self.outlineView.numberOfSelectedRows > 0
             if outline == self.outlineView && self.outlineView.numberOfSelectedRows == 1 {

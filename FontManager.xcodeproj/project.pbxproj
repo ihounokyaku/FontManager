@@ -18,11 +18,15 @@
 		C42E9BF72041716A00A2AE68 /* FontInstaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = C42E9BF62041716A00A2AE68 /* FontInstaller.swift */; };
 		C42E9BFA204185EB00A2AE68 /* FontImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C42E9BF9204185EB00A2AE68 /* FontImporter.swift */; };
 		C42E9BFC2042AB1100A2AE68 /* DraggableClip.swift in Sources */ = {isa = PBXBuildFile; fileRef = C42E9BFB2042AB1100A2AE68 /* DraggableClip.swift */; };
+		C43040C520839D64006C0898 /* NewProjectPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43040C420839D63006C0898 /* NewProjectPopup.swift */; };
 		C437B40E203584DC0088B1BC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C437B40D203584DC0088B1BC /* AppDelegate.swift */; };
 		C437B410203584DC0088B1BC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C437B40F203584DC0088B1BC /* ViewController.swift */; };
 		C437B413203584DC0088B1BC /* FontManager.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C437B411203584DC0088B1BC /* FontManager.xcdatamodeld */; };
 		C437B415203584DC0088B1BC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C437B414203584DC0088B1BC /* Assets.xcassets */; };
 		C437B418203584DC0088B1BC /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C437B416203584DC0088B1BC /* Main.storyboard */; };
+		C455BBB620836CA20085BC5A /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = C455BBB520836CA20085BC5A /* Project.swift */; };
+		C455BBB820836D410085BC5A /* ProjectVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C455BBB720836D410085BC5A /* ProjectVC.swift */; };
+		C455BBBA20836DBE0085BC5A /* ProjectEncoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C455BBB920836DBE0085BC5A /* ProjectEncoder.swift */; };
 		C4704697203B0F5D00778F29 /* SelectableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4704696203B0F5D00778F29 /* SelectableCell.swift */; };
 		C4711F7B20822D9F009E62E2 /* ExampleText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4711F7A20822D9F009E62E2 /* ExampleText.swift */; };
 		C4711F8020822EE2009E62E2 /* EncodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4711F7F20822EE2009E62E2 /* EncodeManager.swift */; };
@@ -48,6 +52,7 @@
 		C42E9BF62041716A00A2AE68 /* FontInstaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontInstaller.swift; sourceTree = "<group>"; };
 		C42E9BF9204185EB00A2AE68 /* FontImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontImporter.swift; sourceTree = "<group>"; };
 		C42E9BFB2042AB1100A2AE68 /* DraggableClip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraggableClip.swift; sourceTree = "<group>"; };
+		C43040C420839D63006C0898 /* NewProjectPopup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewProjectPopup.swift; sourceTree = "<group>"; };
 		C437B40A203584DC0088B1BC /* FontManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FontManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C437B40D203584DC0088B1BC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C437B40F203584DC0088B1BC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -56,6 +61,10 @@
 		C437B417203584DC0088B1BC /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C437B419203584DC0088B1BC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C437B41A203584DC0088B1BC /* FontManager.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FontManager.entitlements; sourceTree = "<group>"; };
+		C455BBB420835F640085BC5A /* FontManager 2.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "FontManager 2.xcdatamodel"; sourceTree = "<group>"; };
+		C455BBB520836CA20085BC5A /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Project.swift; path = "/Users/aird/Dropbox/Xcode Projects/FontManager/FontManager/DataModel/Project.swift"; sourceTree = "<absolute>"; };
+		C455BBB720836D410085BC5A /* ProjectVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectVC.swift; sourceTree = "<group>"; };
+		C455BBB920836DBE0085BC5A /* ProjectEncoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProjectEncoder.swift; sourceTree = "<group>"; };
 		C4704696203B0F5D00778F29 /* SelectableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableCell.swift; sourceTree = "<group>"; };
 		C4711F7A20822D9F009E62E2 /* ExampleText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleText.swift; sourceTree = "<group>"; };
 		C4711F7F20822EE2009E62E2 /* EncodeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EncodeManager.swift; sourceTree = "<group>"; };
@@ -104,6 +113,7 @@
 				C42E9BF62041716A00A2AE68 /* FontInstaller.swift */,
 				C42601A52036D9250026142D /* CoreDataManager.swift */,
 				C4711F7F20822EE2009E62E2 /* EncodeManager.swift */,
+				C455BBB920836DBE0085BC5A /* ProjectEncoder.swift */,
 				C42E9BF9204185EB00A2AE68 /* FontImporter.swift */,
 			);
 			path = Managers;
@@ -136,6 +146,7 @@
 				C40FE8072036D37C008541C0 /* Extensions.swift */,
 				C416860420405AD800B3E562 /* CustomCell.swift */,
 				C437B40D203584DC0088B1BC /* AppDelegate.swift */,
+				C43040C420839D63006C0898 /* NewProjectPopup.swift */,
 				C4711F81208233BC009E62E2 /* Views */,
 				C42E9BF8204185BA00A2AE68 /* Managers */,
 				C4704696203B0F5D00778F29 /* SelectableCell.swift */,
@@ -151,6 +162,7 @@
 		C4711F7C20822E2B009E62E2 /* DataModel */ = {
 			isa = PBXGroup;
 			children = (
+				C455BBB520836CA20085BC5A /* Project.swift */,
 				C4711F7A20822D9F009E62E2 /* ExampleText.swift */,
 				C437B411203584DC0088B1BC /* FontManager.xcdatamodeld */,
 			);
@@ -163,6 +175,7 @@
 				C4711F8820824FC4009E62E2 /* EditTextVC.swift */,
 				C437B40F203584DC0088B1BC /* ViewController.swift */,
 				C4711F82208236B1009E62E2 /* TextExampleVC.swift */,
+				C455BBB720836D410085BC5A /* ProjectVC.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -325,11 +338,14 @@
 				C4704697203B0F5D00778F29 /* SelectableCell.swift in Sources */,
 				C437B413203584DC0088B1BC /* FontManager.xcdatamodeld in Sources */,
 				C42E9BF72041716A00A2AE68 /* FontInstaller.swift in Sources */,
+				C43040C520839D64006C0898 /* NewProjectPopup.swift in Sources */,
 				C42601AB2036DBE70026142D /* Tag+CoreDataClass.swift in Sources */,
+				C455BBB820836D410085BC5A /* ProjectVC.swift in Sources */,
 				C42601AC2036DBE70026142D /* Tag+CoreDataProperties.swift in Sources */,
 				C4B6A45A203C07D1007D42C4 /* FontFamily+CoreDataProperties.swift in Sources */,
 				C42E9BFA204185EB00A2AE68 /* FontImporter.swift in Sources */,
 				C42E9BFC2042AB1100A2AE68 /* DraggableClip.swift in Sources */,
+				C455BBB620836CA20085BC5A /* Project.swift in Sources */,
 				C4711F83208236B1009E62E2 /* TextExampleVC.swift in Sources */,
 				C42601AD2036DBE70026142D /* Font+CoreDataClass.swift in Sources */,
 				C4711F8020822EE2009E62E2 /* EncodeManager.swift in Sources */,
@@ -337,6 +353,7 @@
 				C42601AE2036DBE70026142D /* Font+CoreDataProperties.swift in Sources */,
 				C4711F8920824FC4009E62E2 /* EditTextVC.swift in Sources */,
 				C4711F7B20822D9F009E62E2 /* ExampleText.swift in Sources */,
+				C455BBBA20836DBE0085BC5A /* ProjectEncoder.swift in Sources */,
 				C40FE8082036D37C008541C0 /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -520,6 +537,7 @@
 		C437B411203584DC0088B1BC /* FontManager.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				C455BBB420835F640085BC5A /* FontManager 2.xcdatamodel */,
 				C437B412203584DC0088B1BC /* FontManager.xcdatamodel */,
 			);
 			currentVersion = C437B412203584DC0088B1BC /* FontManager.xcdatamodel */;
