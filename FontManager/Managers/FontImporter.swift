@@ -25,7 +25,7 @@ class FontImporter: NSObject {
     }
     
     func importFilesFromDirectory(url:URL) {
-        var errors = [String]()
+        
         
         if self.checkDirectory(url: url) {
             let (fontURLs, subDirectories) = self.getFontFiles(folderUrl: url)
@@ -36,7 +36,13 @@ class FontImporter: NSObject {
             self.delegate.enableDisableEverything(false)
             
             DispatchQueue.global(qos: .background).async {
+                //- define variables
                 var index = 0
+                var errors = [String]()
+                
+                var newFonts = [[String:Any?]]()
+                
+                //- iterate through each url
             for fontURL in fontURLs{
                 
                 var subDirectory:String?
@@ -45,48 +51,67 @@ class FontImporter: NSObject {
                         subDirectory = name
                     }
                 }
+                
                 let fontName = fontURL.deletingPathExtension().lastPathComponent
                 var coreDataResults:NSManagedObject?
+                
                 DispatchQueue.main.async {
                      self.delegate.statusLabel.stringValue = "Checking Fonts - " + fontName
-                    coreDataResults = self.delegate.dataManager.objectInCoreData(entityName: "Font", attribute: "fileName", name: fontName)
                 }
+                // - check in coredata
+                coreDataResults = self.delegate.dataManager.objectInCoreData(entityName: "Font", attribute: "fileName", name: fontName)
+                
                 if let font = coreDataResults as? Font {
                     if font.path != fontURL.path {
-                        font.path = fontURL.path
-                        self.delegate.dataManager.recordDirectories(mainDirectory: url.path, subDirectory: subDirectory, font: font)
-                        self.delegate.dataManager.saveContext()
+                        newFonts.append(["font":font, "path":fontURL.path, "subdirectory":subDirectory])
                     }
                 } else {
                     
                     if let font = fontURL.path.nsFont(self.delegate) {
-                        DispatchQueue.main.async {
-                            let newFont = self.delegate.dataManager.newFont(fontFile:font, path: fontURL.path)
-                            self.delegate.dataManager.recordDirectories(mainDirectory: url.path, subDirectory: subDirectory, font: newFont)
-                        }
+                        newFonts.append(["font":font, "path":fontURL.path, "subdirectory":subDirectory])
                         
                     } else {
-                         DispatchQueue.main.async {
                         errors.append(fontURL.deletingPathExtension().lastPathComponent)
-                        }
                     }
                 }
                 index += 1
                 if index == fontURLs.count {
-                    print("equal!")
+                    
                     DispatchQueue.main.async {
+                        self.updateFontUrls(fonts: newFonts)
                         self.delegate.statusLabel.stringValue = ""
                         self.delegate.errorFromArray(title: "Could not get the following fonts:", errors: errors)
                         self.delegate.getAllFonts()
                         self.delegate.enableDisableEverything(true)
                     }
                 }else {
-                    print("index is \(index) and count = \(fontURLs.count)")
+                    print("index = \(index) and font urls = \(fontURLs.count)")
                 }
             }
         }
            
         }
+    }
+    
+    func updateFontUrls(fonts:[[String:Any?]], folderPath:String) {
+        
+        for fontObject in fonts {
+            var font:Font!
+            var path = fontObject["path"] as! String
+            var subdirectory = fontObject["subdirectory"] as! String
+            
+            if let nsFont = fontObject["font"] as? NSFont {
+                //- create new font from NSFont
+                font = self.delegate.dataManager.newFont(fontFile:nsFont, path: path)
+            } else {
+                font = fontObject["font"] as! Font
+                
+            }
+            
+            self.delegate.dataManager.recordDirectories(mainDirectory: folderPath, subDirectory: subdirectory, font: font)
+            
+        }
+        
     }
     
     func getFontFiles(folderUrl:URL) -> ([URL], [String:[URL]]) {
