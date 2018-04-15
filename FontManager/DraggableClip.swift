@@ -63,7 +63,7 @@ class DraggableClip: NSClipView {
     }
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
         self.delegate.folderTree.backgroundColor = self.originalColor
-        self.delegate.importer.importFilesFromDirectory(url: self.getUrl(sender)!)
+        self.delegate.importer.importFilesFromDirectory(urls: [self.getUrl(sender)!])
         return true
     }
     
