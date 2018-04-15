@@ -19,16 +19,27 @@ class FontImporter: NSObject {
             if response == .cancel{
                 
             } else {
-                self.importFilesFromDirectory(url: panel.url!)
+                self.importFilesFromDirectory(urls: [panel.url!])
             }
         })
     }
     
-    func importFilesFromDirectory(url:URL) {
+    func importFilesFromDirectory(urls:[URL]) {
+        self.delegate.refreshButton.ay.startLoading()
         
-        
+        var fontURLs = [[String:URL]]()
+        var subDirectories = [String : [URL]]()
+        for url in urls {
         if self.checkDirectory(url: url) {
-            let (fontURLs, subDirectories) = self.getFontFiles(folderUrl: url)
+            
+            let (fUrls, sds) = self.getFontFiles(folderUrl: url)
+            for fUrl in fUrls {
+                fontURLs.append(["fontUrl":fUrl, "mainFolderUrl":url])
+            }
+            for (name, subUrls) in sds {
+                subDirectories[name] = subUrls
+            }
+            }
             if fontURLs.count == 0 {
                 print("no fonts")
                 return
@@ -46,41 +57,47 @@ class FontImporter: NSObject {
             for fontURL in fontURLs{
                 
                 var subDirectory:String?
-                for (name, urls) in subDirectories {
-                    if urls.contains(fontURL) {
+                for (name, subUrls) in subDirectories {
+                    if subUrls.contains(fontURL["fontUrl"]!) {
                         subDirectory = name
                     }
                 }
                 
-                let fontName = fontURL.deletingPathExtension().lastPathComponent
-                var coreDataResults:NSManagedObject?
+                let fontName = fontURL["fontUrl"]!.deletingPathExtension().lastPathComponent
+                var message = "Checking Fonts - " + fontName
+                if index == fontURLs.count - 1 {
+                    message = "Saving... (this may look frozen for a moment, but it's just doing its job)"
+                }
                 
                 DispatchQueue.main.async {
-                     self.delegate.statusLabel.stringValue = "Checking Fonts - " + fontName
+                     self.delegate.statusLabel.stringValue = message
                 }
                 // - check in coredata
+                var coreDataResults:NSManagedObject?
                 coreDataResults = self.delegate.dataManager.objectInCoreData(entityName: "Font", attribute: "fileName", name: fontName)
                 
                 if let font = coreDataResults as? Font {
-                    if font.path != fontURL.path {
-                        newFonts.append(["font":font, "path":fontURL.path, "subdirectory":subDirectory])
+                    if font.path != fontURL["fontUrl"]!.path {
+                        newFonts.append(["font":font, "path":fontURL["fontUrl"]!.path, "mainDirectoryPath":fontURL["mainFolderUrl"]!.path, "subdirectory":subDirectory])
                     }
                 } else {
                     
-                    if let font = fontURL.path.nsFont(self.delegate) {
-                        newFonts.append(["font":font, "path":fontURL.path, "subdirectory":subDirectory])
+                    if let font = fontURL["fontUrl"]!.path.nsFont(self.delegate) {
+                         newFonts.append(["font":font, "path":fontURL["fontUrl"]!.path, "mainDirectoryPath":fontURL["mainFolderUrl"]!.path, "subdirectory":subDirectory])
                         
                     } else {
-                        errors.append(fontURL.deletingPathExtension().lastPathComponent)
+                        errors.append(fontURL["fontUrl"]!.deletingPathExtension().lastPathComponent)
                     }
                 }
                 index += 1
                 if index == fontURLs.count {
                     
                     DispatchQueue.main.async {
-                        self.updateFontUrls(fonts: newFonts, folderPath: url.path)
+                       
+                        self.updateFontUrls(fonts: newFonts)
                         self.delegate.statusLabel.stringValue = ""
                         self.delegate.errorFromArray(title: "Could not get the following fonts:", errors: errors)
+                        self.delegate.refreshButton.ay.stopLoading()
                         self.delegate.getAllFonts()
                         self.delegate.enableDisableEverything(true)
                     }
@@ -93,13 +110,13 @@ class FontImporter: NSObject {
         }
     }
     
-    func updateFontUrls(fonts:[[String:Any?]], folderPath:String) {
+    func updateFontUrls(fonts:[[String:Any?]]) {
         
         for fontObject in fonts {
             var font:Font!
+            let folderPath = fontObject["mainDirectoryPath"] as! String
             let path = fontObject["path"] as! String
             let subdirectory = fontObject["subdirectory"] as? String
-            
             if let nsFont = fontObject["font"] as? NSFont {
                 //- create new font from NSFont
                 font = self.delegate.dataManager.newFont(fontFile:nsFont, path: path)

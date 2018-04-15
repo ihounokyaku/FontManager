@@ -8,6 +8,8 @@
 
 import Cocoa
 import CoreText
+import AyLoading
+
 
 class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSource, NSTextFieldDelegate {
 
@@ -20,7 +22,8 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     @IBOutlet weak var otherOptionsTable: NSTableView!
     @IBOutlet weak var characterFilterBox: NSTextField!
     
-   
+    @IBOutlet weak var refreshButton: NSButton!
+    
     @IBOutlet weak var dragClip: DraggableClip!
     @IBOutlet weak var addFolderButton: NSButton!
     @IBOutlet weak var removeFolder: NSButton!
@@ -66,7 +69,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         
         //-----Create Arrays---------
         self.allTables = [self.outlineView, self.folderTree, self.tagTable, self.singleTagTable, self.otherOptionsTable, self.installedFontsTable]
-        self.allButtons = [self.removeFolder, self.removeButton, self.installButton, self.addFolderButton, self.clearAllTagSelection, self.clearFontTagSelection, self.deleteAllTagSelection, self.deleteFontTagSelection, self.addTagButton]
+        self.allButtons = [self.removeFolder, self.removeButton, self.installButton, self.addFolderButton, self.clearAllTagSelection, self.clearFontTagSelection, self.deleteAllTagSelection, self.deleteFontTagSelection, self.addTagButton, self.refreshButton]
         self.allTextFields = [self.characterFilterBox, self.tagAdder]
         
         //-----Assign Delegates-------
@@ -103,7 +106,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     }
     
     
-//====================== GET/SET FOLDERS ===================================
+    //MARK: ====================== GET/SET FOLDERS ===================================
     
     
     func getAllFonts() {
@@ -111,8 +114,14 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         self.reloadAll()
     }
     
+    @IBAction func reloadPressed(_ sender: Any) {
+        let directories = self.dataManager.allMainDirectories().map{return URL(fileURLWithPath:$0.path!)}
+        self.importer.importFilesFromDirectory(urls: directories)
+        
+    }
     
-//================DISPLAY STUFF =======================
+    
+    //MARK: - ================DISPLAY STUFF =======================
     func fontsFromDirectories(_ directories:[FontFolder])-> [Font] {
         var fonts = [Font]()
         for directory in directories {
@@ -788,6 +797,8 @@ extension ViewController: NSOutlineViewDelegate {
     
     func outlineView(_ outlineView: NSOutlineView, viewFor tableColumn: NSTableColumn?, item: Any) -> NSView? {
         var view:NSTableCellView?
+        
+        
         if outlineView == self.outlineView {
             view = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "FontCell"), owner: self) as? NSTableCellView
             
@@ -821,6 +832,8 @@ extension ViewController: NSOutlineViewDelegate {
                 }
                 self.singleTagTable.reloadData()
             }
+            
+            
         } else {
             
             view = outlineView.makeView(withIdentifier: NSUserInterfaceItemIdentifier(rawValue: "FolderCell"), owner: self) as? NSTableCellView
