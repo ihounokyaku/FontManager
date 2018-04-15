@@ -30,6 +30,8 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     @IBOutlet weak var removeButton: NSButton!
     @IBOutlet weak var addTagButton: NSButton!
     @IBOutlet weak var newProjectButton: NSButton!
+    @IBOutlet weak var viewProjects: NSButton!
+    @IBOutlet weak var addToProjectButton: NSButton!
     
     @IBOutlet weak var clearAllTagSelection: NSButton!
     @IBOutlet weak var deleteAllTagSelection: NSButton!
@@ -70,7 +72,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         
         //-----Create Arrays---------
         self.allTables = [self.outlineView, self.folderTree, self.tagTable, self.singleTagTable, self.otherOptionsTable, self.installedFontsTable]
-        self.allButtons = [self.removeFolder, self.removeButton, self.installButton, self.addFolderButton, self.clearAllTagSelection, self.clearFontTagSelection, self.deleteAllTagSelection, self.deleteFontTagSelection, self.addTagButton, self.refreshButton, self.newProjectButton]
+        self.allButtons = [self.removeFolder, self.removeButton, self.installButton, self.addFolderButton, self.clearAllTagSelection, self.clearFontTagSelection, self.deleteAllTagSelection, self.deleteFontTagSelection, self.addTagButton, self.refreshButton, self.newProjectButton, self.viewProjects, self.addToProjectButton]
         self.allTextFields = [self.characterFilterBox, self.tagAdder]
         
         //-----Assign Delegates-------
@@ -377,7 +379,8 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
             print(self.fontDisplay.string)
             view.str = self.fontDisplay.string
             controller = view
-           
+        } else if let projectVC = controller as? AddToProjectVC {
+            projectVC.fonts = self.fontsSelected().map{return $0.name!}
         }
         
         self.presentViewControllerAsSheet(controller)
@@ -393,6 +396,11 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
             projectEncoder.newProject(name: projectName, fonts: fontNames)
         }
     }
+    
+    @IBAction func addToExistingProjectPressed(_ sender: Any) {
+        self.presentVC(id: "addToProjectVC")
+    }
+    
     
     
     
@@ -547,7 +555,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     
     
 
-//=============== ADD/REMOVE FOLDERS ==========
+    //MARK: - =============== ADD/REMOVE FOLDERS ==========
     
     @IBAction func removeFolderPressed(_ sender: Any) {
         if self.confirmed("Remove this folder?", detail: "All font data it contains will be deleted from this manager (this will not affect the files on your hard disk)") {
@@ -596,6 +604,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     
     func toggleProjectButtons() {
         self.newProjectButton.isEnabled = self.outlineView.selectedRowIndexes.count > 0
+        self.addToProjectButton.isEnabled = self.outlineView.selectedRowIndexes.count > 0
     }
     
     func toggleInstallRemove() {
@@ -648,7 +657,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         let alert = NewProjectPopup()
         let response: NSApplication.ModalResponse = alert.runModal()
         if (response == NSApplication.ModalResponse.alertFirstButtonReturn) {
-            return (alert.accessoryView as! NSTextView).string
+            return (alert.accessoryView as! NSTextField).stringValue
         } else {
             return ""
         }

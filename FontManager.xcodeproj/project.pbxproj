@@ -19,6 +19,7 @@
 		C42E9BFA204185EB00A2AE68 /* FontImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C42E9BF9204185EB00A2AE68 /* FontImporter.swift */; };
 		C42E9BFC2042AB1100A2AE68 /* DraggableClip.swift in Sources */ = {isa = PBXBuildFile; fileRef = C42E9BFB2042AB1100A2AE68 /* DraggableClip.swift */; };
 		C43040C520839D64006C0898 /* NewProjectPopup.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43040C420839D63006C0898 /* NewProjectPopup.swift */; };
+		C43040C72083A5E8006C0898 /* AddToProjectVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C43040C62083A5E8006C0898 /* AddToProjectVC.swift */; };
 		C437B40E203584DC0088B1BC /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C437B40D203584DC0088B1BC /* AppDelegate.swift */; };
 		C437B410203584DC0088B1BC /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C437B40F203584DC0088B1BC /* ViewController.swift */; };
 		C437B413203584DC0088B1BC /* FontManager.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C437B411203584DC0088B1BC /* FontManager.xcdatamodeld */; };
@@ -53,6 +54,7 @@
 		C42E9BF9204185EB00A2AE68 /* FontImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontImporter.swift; sourceTree = "<group>"; };
 		C42E9BFB2042AB1100A2AE68 /* DraggableClip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraggableClip.swift; sourceTree = "<group>"; };
 		C43040C420839D63006C0898 /* NewProjectPopup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewProjectPopup.swift; sourceTree = "<group>"; };
+		C43040C62083A5E8006C0898 /* AddToProjectVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToProjectVC.swift; sourceTree = "<group>"; };
 		C437B40A203584DC0088B1BC /* FontManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FontManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C437B40D203584DC0088B1BC /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C437B40F203584DC0088B1BC /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -173,6 +175,7 @@
 			isa = PBXGroup;
 			children = (
 				C4711F8820824FC4009E62E2 /* EditTextVC.swift */,
+				C43040C62083A5E8006C0898 /* AddToProjectVC.swift */,
 				C437B40F203584DC0088B1BC /* ViewController.swift */,
 				C4711F82208236B1009E62E2 /* TextExampleVC.swift */,
 				C455BBB720836D410085BC5A /* ProjectVC.swift */,
@@ -341,6 +344,7 @@
 				C43040C520839D64006C0898 /* NewProjectPopup.swift in Sources */,
 				C42601AB2036DBE70026142D /* Tag+CoreDataClass.swift in Sources */,
 				C455BBB820836D410085BC5A /* ProjectVC.swift in Sources */,
+				C43040C72083A5E8006C0898 /* AddToProjectVC.swift in Sources */,
 				C42601AC2036DBE70026142D /* Tag+CoreDataProperties.swift in Sources */,
 				C4B6A45A203C07D1007D42C4 /* FontFamily+CoreDataProperties.swift in Sources */,
 				C42E9BFA204185EB00A2AE68 /* FontImporter.swift in Sources */,
