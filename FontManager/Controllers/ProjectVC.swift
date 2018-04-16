@@ -43,22 +43,32 @@ class ProjectVC: NSViewController {
     
     //MARK: - Handle Enable/Disable
     func toggleButtons()  {
-        self.addRemoveProjectsSegment.setEnabled((self.projectsTable.selectedRow >= 0), forSegment: 1)
+        for int in 1...3 {
+           self.addRemoveProjectsSegment.setEnabled((self.projectsTable.selectedRow >= 0), forSegment: int)
+        }
         self.importExportProjectSegment.setEnabled(self.projectsTable.selectedRow >= 0, forSegment: 1)
         self.addRemoveFontsSegment.setEnabled(self.fontTable.selectedRow >= 0, forSegment: 1)
         self.addRemoveFontsSegment.setEnabled(self.projectsTable.selectedRow >= 0, forSegment: 0)
         self.importRemoveFontsSegment.setEnabled(self.projectsTable.selectedRow >= 0, forSegment: 1)
         self.importRemoveFontsSegment.setEnabled(self.projectsTable.selectedRow >= 0, forSegment: 0)
+        
     }
     
     
     //MARK: - HANDLE BUTTON ACTIONS
     
     @IBAction func projectsAddRemovePressed(_ sender: NSSegmentedControl) {
-        if sender.selectedSegment == 0 {
-            self.addProject()
-        } else {
+        switch  sender.selectedSegment {
+        case 0:
+           self.addProject()
+        case 1:
             self.removeProject()
+        case 2:
+            self.duplicateProject()
+        case 3:
+            self.renameProject()
+        default:
+            break
         }
     }
     
@@ -93,7 +103,7 @@ class ProjectVC: NSViewController {
     func addProject() {
         let alert = NewProjectPopup()
         let response: NSApplication.ModalResponse = alert.runModal()
-        if (response == NSApplication.ModalResponse.alertFirstButtonReturn) {
+        if (response == NSApplication.ModalResponse.alertFirstButtonReturn)  && (alert.accessoryView as! NSTextField).stringValue != "" {
             self.encoder.newProject(name: (alert.accessoryView as! NSTextField).stringValue, fonts: nil)
             self.reloadAllTables()
         }
@@ -110,6 +120,49 @@ class ProjectVC: NSViewController {
     }
     
      //TODO: COPY AND RENAME
+    func duplicateProject() {
+        //-- get project
+        let project = self.encoder.projectArray[self.projectsTable.selectedRow]
+        
+        //--setup and show alert
+        let alert = NewProjectPopup(messageText: "Duplicate Project")
+        (alert.accessoryView as! NSTextField).stringValue = project.name + " copy"
+        
+        //---get response
+        let response: NSApplication.ModalResponse = alert.runModal()
+        if (response == NSApplication.ModalResponse.alertFirstButtonReturn)  && (alert.accessoryView as! NSTextField).stringValue != "" {
+            
+            //--create new and reload
+            self.encoder.newProject(name: (alert.accessoryView as! NSTextField).stringValue, fonts: project.fonts)
+            self.reloadAllTables()
+        }
+    }
+    
+    func renameProject() {
+        //-- get selected row
+        let selectedRow = self.projectsTable.selectedRow
+        
+        //-- get project
+        let project = self.encoder.projectArray[selectedRow]
+        
+        //--setup and show alert
+        let alert = NewProjectPopup(messageText: "Rename Project")
+        (alert.accessoryView as! NSTextField).stringValue = project.name
+        
+        //---get response
+        let response: NSApplication.ModalResponse = alert.runModal()
+        if (response == NSApplication.ModalResponse.alertFirstButtonReturn) && (alert.accessoryView as! NSTextField).stringValue != "" {
+        
+            //--edit and save
+            self.encoder.projectArray[selectedRow].name =  (alert.accessoryView as! NSTextField).stringValue
+            self.encoder.saveProjects()
+            
+            //--reload and reselect
+            self.reloadAllTables()
+            self.projectsTable.selectRowIndexes(IndexSet([selectedRow]), byExtendingSelection: false)
+        }
+    }
+    
     
     func importProject() {
         
@@ -187,7 +240,7 @@ class ProjectVC: NSViewController {
     
     //MARK: - FONT FUNCTIONS
     func addFont() {
-        //TODO: CreateFontPickerViewController
+        
         self.presentVC(id: "fontPicker")
     }
     

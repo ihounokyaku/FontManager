@@ -9,7 +9,8 @@
 import Cocoa
 
 class FontPickerVC: NSViewController {
-
+    //TODO: - ADD DID CHANGE
+    
     @IBOutlet weak var segmentControl: NSSegmentedControl!
     @IBOutlet weak var outlineView: NSOutlineView!
     
@@ -159,14 +160,14 @@ extension FontPickerVC : NSOutlineViewDelegate, NSOutlineViewDataSource {
     }
     
     func outlineView(_ outlineView: NSOutlineView, shouldSelectItem item: Any) -> Bool {
-        
-            
-            if let view = outlineView.view(atColumn: 0, row: outlineView.row(forItem: item), makeIfNecessary: false) as? SelectableCell, view.selectable == false {
+        if let view = outlineView.view(atColumn: 0, row: outlineView.row(forItem: item), makeIfNecessary: false) as? SelectableCell, view.selectable == false {
                 return false
-            
         }
-        
         return true
+    }
+    
+    func outlineViewSelectionDidChange(_ notification: Notification) {
+        self.toggleButtons()
     }
     
     

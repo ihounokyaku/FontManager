@@ -64,7 +64,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
 //===================OTHER VARS=========================
     var selectedFolderURL:URL?
     var displayedFont = NSFont.systemFont(ofSize: 30)
-    
+    var stopLoading = false
     
     //MARK: ===================ON LOAD=============================
     
@@ -73,7 +73,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         
         //-----Create Arrays---------
         self.allTables = [self.outlineView, self.folderTree, self.tagTable, self.singleTagTable, self.otherOptionsTable, self.installedFontsTable]
-        self.allButtons = [self.removeFolder, self.removeButton, self.installButton, self.addFolderButton, self.clearAllTagSelection, self.clearFontTagSelection, self.deleteAllTagSelection, self.deleteFontTagSelection, self.addTagButton, self.refreshButton, self.newProjectButton, self.viewProjects, self.addToProjectButton]
+        self.allButtons = [self.removeFolder, self.removeButton, self.installButton, self.addFolderButton, self.clearAllTagSelection, self.clearFontTagSelection, self.deleteAllTagSelection, self.deleteFontTagSelection, self.addTagButton, self.newProjectButton, self.viewProjects, self.addToProjectButton]
         self.allTextFields = [self.characterFilterBox, self.tagAdder]
         
         //-----Assign Delegates-------
@@ -118,10 +118,16 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         self.reloadAll()
     }
     
-    @IBAction func reloadPressed(_ sender: Any) {
-        let directories = self.dataManager.allMainDirectories().map{return URL(fileURLWithPath:$0.path!)}
-        self.importer.importFilesFromDirectory(urls: directories)
-        
+    @IBAction func reloadPressed(_ sender: NSButton) {
+        print("PRESSED")
+        if sender.title == "Refresh" {
+            self.stopLoading = false
+            let directories = self.dataManager.allMainDirectories().map{return URL(fileURLWithPath:$0.path!)}
+            self.importer.importFilesFromDirectory(urls: directories)
+        } else {
+            print("stopLoading")
+            self.stopLoading = true
+        }
     }
     
     

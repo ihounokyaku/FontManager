@@ -1560,7 +1560,9 @@
                                     <segments>
                                         <segment image="NSAddTemplate"/>
                                         <segment image="NSRemoveTemplate"/>
-                                        <segment width="180" enabled="NO"/>
+                                        <segment image="duplicate" enabled="NO"/>
+                                        <segment label="Rename"/>
+                                        <segment width="66" enabled="NO"/>
                                     </segments>
                                 </segmentedCell>
                                 <connections>
@@ -1628,7 +1630,7 @@
                 </viewController>
                 <customObject id="fj6-Qh-57B" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-663" y="1804"/>
+            <point key="canvasLocation" x="-663" y="1803.5"/>
         </scene>
         <!--Add To Project-->
         <scene sceneID="Btr-Nu-3FV">
@@ -2071,5 +2073,6 @@ Gw
         <image name="NSActionTemplate" width="14" height="14"/>
         <image name="NSAddTemplate" width="11" height="11"/>
         <image name="NSRemoveTemplate" width="11" height="11"/>
+        <image name="duplicate" width="23" height="24"/>
     </resources>
 </document>

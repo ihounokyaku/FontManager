@@ -25,8 +25,9 @@ class FontImporter: NSObject {
     }
     
     func importFilesFromDirectory(urls:[URL]) {
-        self.delegate.refreshButton.ay.startLoading()
-        
+        self.delegate.stopLoading = false
+        //self.delegate.refreshButton.ay.startLoading()
+        self.delegate.refreshButton.title = "Stop"
         var fontURLs = [[String:URL]]()
         var subDirectories = [String : [URL]]()
         for url in urls {
@@ -47,6 +48,7 @@ class FontImporter: NSObject {
             self.delegate.enableDisableEverything(false)
             
             DispatchQueue.global(qos: .background).async {
+                
                 //- define variables
                 var index = 0
                 var errors = [String]()
@@ -56,6 +58,19 @@ class FontImporter: NSObject {
                 //- iterate through each url
             for fontURL in fontURLs{
                 
+                
+                
+                if self.delegate.stopLoading == true {
+                    
+                    DispatchQueue.main.async {
+                        self.delegate.statusLabel.stringValue = ""
+                        self.delegate.refreshButton.title = "Refresh"
+                        self.delegate.enableDisableEverything(true)
+                    }
+                    
+                    
+                    return
+                }
                 var subDirectory:String?
                 for (name, subUrls) in subDirectories {
                     if subUrls.contains(fontURL["fontUrl"]!) {
@@ -70,7 +85,10 @@ class FontImporter: NSObject {
                 }
                 
                 DispatchQueue.main.async {
-                     self.delegate.statusLabel.stringValue = message
+                   
+                        self.delegate.statusLabel.stringValue = message
+        
+                    
                 }
                 // - check in coredata
                 var coreDataResults:NSManagedObject?
@@ -99,12 +117,14 @@ class FontImporter: NSObject {
                         self.updateFontUrls(fonts: newFonts)
                         self.delegate.statusLabel.stringValue = ""
                         self.delegate.errorFromArray(title: "Could not get the following fonts:", errors: errors)
-                        self.delegate.refreshButton.ay.stopLoading()
+                        //self.delegate.refreshButton.ay.stopLoading()
+                        self.delegate.refreshButton.title = "Refresh"
+                        self.delegate.stopLoading = false
                         self.delegate.getAllFonts()
                         self.delegate.enableDisableEverything(true)
                     }
                 }else {
-                    print("index = \(index) and font urls = \(fontURLs.count)")
+                    //print("index = \(index) and font urls = \(fontURLs.count)")
                 }
             }
         }
