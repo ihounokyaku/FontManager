@@ -113,6 +113,7 @@ class ProjectVC: NSViewController {
                 if let error = self.encoder.importProject(from: panel.url!){
                     self.errorAlert("Error Importing Project", detail: error)
                 } else {
+                    UserDefaults.standard.set(panel.url!.path, forKey: "importPath")
                     self.reloadAllTables()
                 }
             }
@@ -182,7 +183,9 @@ class ProjectVC: NSViewController {
     }
     
     func removeFontFromProject() {
-        
+        self.encoder.projectArray[self.projectsTable.selectedRow].fonts.remove(at: self.fontTable.selectedRow)
+        self.encoder.saveProjects()
+        self.fontTable.reloadData()
     }
     
     func installFonts() {
@@ -250,10 +253,10 @@ extension ProjectVC : NSTableViewDelegate, NSTableViewDataSource {
         } else if tableView == self.fontTable {
             let fontName = self.encoder.projectArray[self.projectsTable.selectedRow].fonts[row]
             cell.textField!.stringValue = fontName
-            
+            cell.textField!.textColor = NSColor.black
             if let cdFont = self.dataManager.objectInCoreData(entityName: "Font", attribute: "name", name: fontName) as? Font {
-                if self.installer.fontsInstalled(fonts: [cdFont],verbose:true) {
-                    
+                if self.installer.fontsInstalled(fonts: [cdFont]) {
+                    print("found \(fontName) in core data. It is (\(cdFont.name!)")
                     cell.textField!.textColor = NSColor.green
                 } else if !FileManager.default.fileExists(atPath: cdFont.path!) {
                     cell.textField!.textColor = NSColor.red
