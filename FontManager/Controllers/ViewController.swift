@@ -52,6 +52,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     let installer = FontInstaller()
     let importer = FontImporter()
     let dataManager = CoreDataManager()
+    let fileManagement = FileManagement()
     
     
     
@@ -606,7 +607,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     
     func toggleInstallRemove() {
         let fonts = self.fontsSelected()
-        if fonts.count != 0 && !self.fontsMissing(fonts: fonts){
+        if fonts.count != 0 && !self.fileManagement.fontsMissing(fonts: fonts){
             self.installButton.isEnabled = !self.installer.fontsInstalled(fonts: fonts)
             self.removeButton.isEnabled = self.installer.fontsInstalled(fonts: fonts, any:true)
         } else {
@@ -847,11 +848,11 @@ extension ViewController: NSOutlineViewDelegate {
                         textField.stringValue = family.name!
                     }
                     installed = self.installer.fontsInstalled(fonts: fonts)
-                    missing = self.fontsMissing(fonts: fonts)
+                    missing = self.fileManagement.fontsMissing(fonts: fonts)
                 } else if let font = item as? Font{
                     textField.stringValue = "---" + font.name!.lastSection()
                     installed = self.installer.fontsInstalled(fonts: [font])
-                    missing = self.fontsMissing(fonts: [font])
+                    missing = self.fileManagement.fontsMissing(fonts: [font])
                 }
                 
                 //Text Color
@@ -928,17 +929,7 @@ extension ViewController: NSOutlineViewDelegate {
     
     
     
-    func fontsMissing(fonts:[Font], _ any:Bool = false)-> Bool {
-        
-        for font in fonts {
-            if FileManager.default.fileExists(atPath: font.path!) == !any {
-                return any
-            } else {
-                print("missing font at \(font.path!)")
-            }
-        }
-        return !any
-    }
+    
     
 }
 

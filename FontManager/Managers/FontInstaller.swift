@@ -88,13 +88,16 @@ class FontInstaller: NSObject {
     
     func copyFile(_ fileURL:URL)-> String?  {
         let fileName = fileURL.lastPathComponent
-        do {
-            try FileManager.default.copyItem(at: fileURL, to: URL(fileURLWithPath: self.fontFolderPath + "/" + fileName))
-            return nil
-        } catch let error as NSError{
-            
-            return error.localizedDescription
+        if !FileManager.default.fileExists(atPath: self.fontFolderPath + "/" + fileName) {
+            do {
+                try FileManager.default.copyItem(at: fileURL, to: URL(fileURLWithPath: self.fontFolderPath + "/" + fileName))
+                return nil
+            } catch let error as NSError{
+                
+                return error.localizedDescription
+            }
         }
+        return nil
     }
     
     
@@ -102,7 +105,7 @@ class FontInstaller: NSObject {
     //MARK: - ==================REMOVE==============================
     func removeFonts(fonts:[Font]) {
         var errors = [String]()
-        if self.delegate.fontsMissing(fonts: fonts, true) {
+        if self.delegate.fileManagement.fontsMissing(fonts: fonts, true) {
             if !self.delegate.confirmed("Some Fonts are Missing", detail: "Some of the fonts you are attempting to remove cannot be found in their original folder. If you remove these fonts they may be gone forever!") {
                 return
             }
@@ -120,12 +123,15 @@ class FontInstaller: NSObject {
     
     func removeFile(font:Font)-> String? {
         let fileName = URL(fileURLWithPath: font.path!).lastPathComponent
-        do {
-            try FileManager.default.removeItem(at: URL(fileURLWithPath: self.fontFolderPath + "/" + fileName))
-            return nil
-        } catch let error as NSError{
-            return error.localizedDescription
+        if FileManager.default.fileExists(atPath: self.fontFolderPath + "/" + fileName) {
+            do {
+                try FileManager.default.removeItem(at: URL(fileURLWithPath: self.fontFolderPath + "/" + fileName))
+                return nil
+            } catch let error as NSError{
+                return error.localizedDescription
+            }
         }
+        return nil
     }
 
     

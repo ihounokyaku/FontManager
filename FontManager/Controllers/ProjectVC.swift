@@ -38,6 +38,7 @@ class ProjectVC: NSViewController {
         
         //-- Set View
         self.toggleButtons()
+        
     }
     
     //MARK: - Handle Enable/Disable
@@ -45,7 +46,9 @@ class ProjectVC: NSViewController {
         self.addRemoveProjectsSegment.setEnabled((self.projectsTable.selectedRow >= 0), forSegment: 1)
         self.importExportProjectSegment.setEnabled(self.projectsTable.selectedRow >= 0, forSegment: 1)
         self.addRemoveFontsSegment.setEnabled(self.fontTable.selectedRow >= 0, forSegment: 1)
-        self.importRemoveFontsSegment.setEnabled(self.fontTable.selectedRow >= 0, forSegment: 1)
+        self.addRemoveFontsSegment.setEnabled(self.projectsTable.selectedRow >= 0, forSegment: 0)
+        self.importRemoveFontsSegment.setEnabled(self.projectsTable.selectedRow >= 0, forSegment: 1)
+        self.importRemoveFontsSegment.setEnabled(self.projectsTable.selectedRow >= 0, forSegment: 0)
     }
     
     
@@ -84,6 +87,9 @@ class ProjectVC: NSViewController {
     }
     
     //MARK: - PROJECT FUNCTIONS
+    
+   
+    
     func addProject() {
         let alert = NewProjectPopup()
         let response: NSApplication.ModalResponse = alert.runModal()
@@ -102,6 +108,8 @@ class ProjectVC: NSViewController {
             self.reloadAllTables()
         }
     }
+    
+     //TODO: COPY AND RENAME
     
     func importProject() {
         
@@ -180,7 +188,10 @@ class ProjectVC: NSViewController {
     //MARK: - FONT FUNCTIONS
     func addFont() {
         //TODO: CreateFontPickerViewController
+        self.presentVC(id: "fontPicker")
     }
+    
+    
     
     func removeFontFromProject() {
         self.encoder.projectArray[self.projectsTable.selectedRow].fonts.remove(at: self.fontTable.selectedRow)
@@ -189,11 +200,15 @@ class ProjectVC: NSViewController {
     }
     
     func installFonts() {
-        
+        let fonts = self.getFontFilesFor(project: self.encoder.projectArray[self.projectsTable.selectedRow])
+        self.installer.installFonts(fonts: fonts)
+        self.fontTable.reloadData()
     }
     
     func uninstallFonts() {
-        
+        let fonts = self.getFontFilesFor(project: self.encoder.projectArray[self.projectsTable.selectedRow])
+        self.installer.removeFonts(fonts: fonts)
+        self.fontTable.reloadData()
     }
     
     //MARK: - FONT FUNCTIONS
@@ -205,6 +220,17 @@ class ProjectVC: NSViewController {
             }
         }
         return fonts
+    }
+    
+    //MARK: - PRESENT VC
+    func presentVC(id:String) {
+        let storyboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Main"), bundle: nil)
+        let controller = storyboard.instantiateController(withIdentifier: NSStoryboard.SceneIdentifier(rawValue: id)) as! NSViewController
+        if let destinationVC = controller as? FontPickerVC {
+            destinationVC.delegate = self
+            destinationVC.fontsInProject = self.getFontFilesFor(project: self.encoder.projectArray[self.projectsTable.selectedRow])
+        }
+        self.presentViewControllerAsSheet(controller)
     }
     
     //MARK: - ERROR ALERTS, ETC

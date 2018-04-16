@@ -10,6 +10,7 @@
 		BB518C167198327D0EBF6F41 /* Pods_FontManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8962885F0B3456347E5D4C26 /* Pods_FontManager.framework */; };
 		C40C45B4208475CA006DF26A /* FileManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40C45B3208475CA006DF26A /* FileManagement.swift */; };
 		C40C45B62084880D006DF26A /* DirectoryPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40C45B52084880D006DF26A /* DirectoryPanel.swift */; };
+		C40C45B8208498B2006DF26A /* FontPickerVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40C45B7208498B2006DF26A /* FontPickerVC.swift */; };
 		C40FE8082036D37C008541C0 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40FE8072036D37C008541C0 /* Extensions.swift */; };
 		C416860520405AD800B3E562 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C416860420405AD800B3E562 /* CustomCell.swift */; };
 		C42601A62036D9250026142D /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C42601A52036D9250026142D /* CoreDataManager.swift */; };
@@ -50,6 +51,7 @@
 		BD2BFA5F20F2F83164676282 /* Pods-FontManager.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FontManager.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FontManager/Pods-FontManager.debug.xcconfig"; sourceTree = "<group>"; };
 		C40C45B3208475CA006DF26A /* FileManagement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagement.swift; sourceTree = "<group>"; };
 		C40C45B52084880D006DF26A /* DirectoryPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryPanel.swift; sourceTree = "<group>"; };
+		C40C45B7208498B2006DF26A /* FontPickerVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontPickerVC.swift; sourceTree = "<group>"; };
 		C40FE8072036D37C008541C0 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		C416860420405AD800B3E562 /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
 		C42601A52036D9250026142D /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
@@ -119,6 +121,15 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		C40C45BB2084A821006DF26A /* TableViewCells */ = {
+			isa = PBXGroup;
+			children = (
+				C4704696203B0F5D00778F29 /* SelectableCell.swift */,
+				C416860420405AD800B3E562 /* CustomCell.swift */,
+			);
+			path = TableViewCells;
+			sourceTree = "<group>";
+		};
 		C42E9BF8204185BA00A2AE68 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
@@ -157,12 +168,11 @@
 			children = (
 				C4711F7C20822E2B009E62E2 /* DataModel */,
 				C40FE8072036D37C008541C0 /* Extensions.swift */,
-				C416860420405AD800B3E562 /* CustomCell.swift */,
 				C437B40D203584DC0088B1BC /* AppDelegate.swift */,
+				C40C45BB2084A821006DF26A /* TableViewCells */,
 				C4BFA6AF20846127009AAD91 /* Alerts and Panels */,
 				C4711F81208233BC009E62E2 /* Controllers */,
 				C42E9BF8204185BA00A2AE68 /* Managers */,
-				C4704696203B0F5D00778F29 /* SelectableCell.swift */,
 				C42E9BFB2042AB1100A2AE68 /* DraggableClip.swift */,
 				C437B414203584DC0088B1BC /* Assets.xcassets */,
 				C437B416203584DC0088B1BC /* Main.storyboard */,
@@ -190,6 +200,7 @@
 				C437B40F203584DC0088B1BC /* ViewController.swift */,
 				C4711F82208236B1009E62E2 /* TextExampleVC.swift */,
 				C455BBB720836D410085BC5A /* ProjectVC.swift */,
+				C40C45B7208498B2006DF26A /* FontPickerVC.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -362,6 +373,7 @@
 				C416860520405AD800B3E562 /* CustomCell.swift in Sources */,
 				C437B410203584DC0088B1BC /* ViewController.swift in Sources */,
 				C4BFA6B12084617E009AAD91 /* SavePanel.swift in Sources */,
+				C40C45B8208498B2006DF26A /* FontPickerVC.swift in Sources */,
 				C437B40E203584DC0088B1BC /* AppDelegate.swift in Sources */,
 				C4704697203B0F5D00778F29 /* SelectableCell.swift in Sources */,
 				C437B413203584DC0088B1BC /* FontManager.xcdatamodeld in Sources */,

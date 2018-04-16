@@ -35,4 +35,16 @@ class FileManagement: NSObject {
         }
         return path
     }
+    
+    func fontsMissing(fonts:[Font], _ any:Bool = false)-> Bool {
+        
+        for font in fonts {
+            if FileManager.default.fileExists(atPath: font.path!) == !any {
+                return any
+            } else {
+                print("missing font at \(font.path!)")
+            }
+        }
+        return !any
+    }
 }
