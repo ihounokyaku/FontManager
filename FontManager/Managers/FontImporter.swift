@@ -26,7 +26,7 @@ class FontImporter: NSObject {
     
     func importFilesFromDirectory(urls:[URL]) {
         self.delegate.stopLoading = false
-        //self.delegate.refreshButton.ay.startLoading()
+        self.delegate.loaderView.ay.startLoading()
         self.delegate.refreshButton.title = "Stop"
         var fontURLs = [[String:URL]]()
         var subDirectories = [String : [URL]]()
@@ -66,6 +66,7 @@ class FontImporter: NSObject {
                         self.delegate.statusLabel.stringValue = ""
                         self.delegate.refreshButton.title = "Refresh"
                         self.delegate.enableDisableEverything(true)
+                        self.delegate.loaderView.ay.stopLoading()
                     }
                     
                     
@@ -122,6 +123,7 @@ class FontImporter: NSObject {
                         self.delegate.stopLoading = false
                         self.delegate.getAllFonts()
                         self.delegate.enableDisableEverything(true)
+                        self.delegate.loaderView.ay.stopLoading()
                     }
                 }else {
                     //print("index = \(index) and font urls = \(fontURLs.count)")

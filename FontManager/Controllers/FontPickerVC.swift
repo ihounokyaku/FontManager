@@ -9,7 +9,7 @@
 import Cocoa
 
 class FontPickerVC: NSViewController {
-    //TODO: - ADD DID CHANGE
+    
     
     @IBOutlet weak var segmentControl: NSSegmentedControl!
     @IBOutlet weak var outlineView: NSOutlineView!

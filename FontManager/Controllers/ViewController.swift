@@ -38,6 +38,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     @IBOutlet weak var clearFontTagSelection: NSButton!
     @IBOutlet weak var deleteFontTagSelection: NSButton!
     
+    @IBOutlet weak var loaderView: NSView!
     @IBOutlet weak var installButton: NSButton!
     @IBOutlet var fontDisplay: NSTextView!
     @IBOutlet weak var statusLabel: NSTextField!
