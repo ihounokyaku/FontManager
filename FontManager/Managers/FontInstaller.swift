@@ -129,12 +129,14 @@ class FontInstaller: NSObject {
     
 //================= CHECK FOR INSTALLED =========================
     
-    func fontsInstalled(fonts:[Font], any:Bool = false)-> Bool {
+    func fontsInstalled(fonts:[Font], any:Bool = false, verbose:Bool = false)-> Bool {
         for font in fonts {
+           
             if let fileName = font.fileName {
-            if self.installedFonts.contains(fileName) == any {
-                return any
-            }
+                let installedNames = self.installedFonts.map{return $0.withoutFileExtension()}
+                if installedNames.contains(fileName) == any {
+                    return any
+                }
             }
         }
         return !any

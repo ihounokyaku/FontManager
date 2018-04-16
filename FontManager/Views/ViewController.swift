@@ -321,7 +321,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         return fonts
     }
     
-//================INSTALL/REMOVE FONT BUTTONS =======================
+    //MARK: - ================INSTALL/REMOVE FONT BUTTONS =======================
     
     @IBAction func installPressed(_ sender: Any) {
         self.installButton.isEnabled = false
@@ -336,7 +336,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     
     
     
-//=============== CHOOSE FONT DIRECTORY ======================
+    //MARK: - =============== CHOOSE FONT DIRECTORY ======================
     
     @IBAction func directoryPressed(_ sender: Any) {
         self.installer.chooseSystemFontDirectory()
@@ -368,6 +368,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     }
     
     
+    // MARK: - =================Present ViewController==============
     
     func presentVC(id:String) {
         let storyboard = NSStoryboard(name: NSStoryboard.Name(rawValue: "Main"), bundle: nil)
@@ -379,10 +380,11 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
             print(self.fontDisplay.string)
             view.str = self.fontDisplay.string
             controller = view
-        } else if let projectVC = controller as? AddToProjectVC {
-            projectVC.fonts = self.fontsSelected().map{return $0.name!}
+        } else if let addToProjectVC = controller as? AddToProjectVC {
+           addToProjectVC.fonts = self.fontsSelected().map{return $0.name!}
+        } else if let projectVC = controller as? ProjectVC {
+            projectVC.installer = self.installer
         }
-        
         self.presentViewControllerAsSheet(controller)
     }
     
@@ -401,6 +403,9 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         self.presentVC(id: "addToProjectVC")
     }
     
+    @IBAction func viewProjectsPressed(_ sender: Any) {
+        self.presentVC(id: "projectVC")
+    }
     
     
     
@@ -862,7 +867,7 @@ extension ViewController: NSOutlineViewDelegate {
                 
                 //Text Color
                 if installed {
-                    textField.textColor = NSColor.green
+                    textField.textColor = NSColor.systemGreen
                 } else if missing {
                     textField.textColor = NSColor.red
                 } else {

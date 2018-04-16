@@ -11,7 +11,8 @@ import Cocoa
 class ProjectVC: NSViewController {
     //MARK: - DATA MODEL/ENCODER
     let encoder = ProjectEncoder()
-    
+    let dataManager = CoreDataManager()
+    var installer = FontInstaller()
     
     //MARK: - IBOutlets
     // -- TableViews
@@ -136,8 +137,21 @@ extension ProjectVC : NSTableViewDelegate, NSTableViewDataSource {
         if tableView == self.projectsTable {
             cell.textField!.stringValue = self.encoder.projectArray[row].name
         } else if tableView == self.fontTable {
-            cell.textField!.stringValue = self.encoder.projectArray[self.projectsTable.selectedRow].fonts[row]
-            //TODO: Check if installed and exists
+            let fontName = self.encoder.projectArray[self.projectsTable.selectedRow].fonts[row]
+            cell.textField!.stringValue = fontName
+            
+            
+            if let cdFont = self.dataManager.objectInCoreData(entityName: "Font", attribute: "name", name: fontName) as? Font {
+                if self.installer.fontsInstalled(fonts: [cdFont],verbose:true) {
+                    
+                    cell.textField!.textColor = NSColor.green
+                } else if !FileManager.default.fileExists(atPath: cdFont.path!) {
+                    cell.textField!.textColor = NSColor.red
+                }
+            } else {
+                cell.textField!.textColor = NSColor.red
+                cell.textField!.font  = NSFont(name: "HelveticaNeue-Italic", size: 13)!
+            }
         }
         
         return cell

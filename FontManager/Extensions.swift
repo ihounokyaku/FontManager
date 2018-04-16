@@ -26,6 +26,15 @@ extension String {
         }
         return self
     }
+    
+    func withoutFileExtension()-> String {
+        if let index = (self.range(of: ".", options:NSString.CompareOptions.backwards)?.lowerBound) {
+            return String(self.prefix(upTo: index))
+        }
+        return self
+    }
+    
+    
     func colorFromRGB(alpha: Float = 1.0) -> NSColor {
         let scanner = Scanner(string:self)
         var color:Int32 = 0;

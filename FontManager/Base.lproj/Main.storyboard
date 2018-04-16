@@ -1343,7 +1343,7 @@
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <segue destination="ngl-Ei-UsG" kind="sheet" id="vmT-b0-XeX"/>
+                                    <action selector="viewProjectsPressed:" target="XfG-lQ-9wD" id="Yq6-Zk-GaR"/>
                                 </connections>
                             </button>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="XId-MZ-Zvw">
@@ -1404,7 +1404,7 @@
         <!--ProjectVC-->
         <scene sceneID="6xg-lw-Xs1">
             <objects>
-                <viewController id="ngl-Ei-UsG" customClass="ProjectVC" customModule="FontManager" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="projectVC" id="ngl-Ei-UsG" customClass="ProjectVC" customModule="FontManager" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="YLB-KA-2Sv">
                         <rect key="frame" x="0.0" y="0.0" width="614" height="403"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -1461,7 +1461,7 @@
                                     </subviews>
                                 </clipView>
                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="oIQ-Wc-Zrr">
-                                    <rect key="frame" x="1" y="244" width="236" height="16"/>
+                                    <rect key="frame" x="1" y="7" width="0.0" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="GG8-rG-3wn">
@@ -1525,7 +1525,7 @@
                                     </subviews>
                                 </clipView>
                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="ObL-FP-JB7">
-                                    <rect key="frame" x="1" y="244" width="236" height="16"/>
+                                    <rect key="frame" x="1" y="7" width="0.0" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="YWd-Wy-RG2">
@@ -1642,7 +1642,7 @@
                                 <rect key="frame" x="0.0" y="20" width="260" height="280"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <clipView key="contentView" ambiguous="YES" id="IVA-Bg-PWh">
-                                    <rect key="frame" x="1" y="23" width="258" height="256"/>
+                                    <rect key="frame" x="1" y="0.0" width="258" height="279"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <subviews>
                                         <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnReordering="NO" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" headerView="ulf-NZ-yUo" viewBased="YES" id="VL4-5D-43u">
@@ -1690,7 +1690,7 @@
                                     </subviews>
                                 </clipView>
                                 <scroller key="horizontalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="YES" id="MXw-bF-HSf">
-                                    <rect key="frame" x="1" y="263" width="258" height="16"/>
+                                    <rect key="frame" x="1" y="7" width="0.0" height="16"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </scroller>
                                 <scroller key="verticalScroller" hidden="YES" verticalHuggingPriority="750" horizontal="NO" id="yOm-qT-jra">
