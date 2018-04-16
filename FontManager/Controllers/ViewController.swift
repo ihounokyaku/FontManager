@@ -342,15 +342,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
         self.installer.chooseSystemFontDirectory()
     }
     
-    func directoryPanel(message:String, url:String)-> NSOpenPanel {
-        let panel = NSOpenPanel()
-        panel.allowsMultipleSelection = false
-        panel.canChooseDirectories = true
-        panel.canChooseFiles = false
-        panel.message = message
-        panel.directoryURL = URL(string:url)
-        return panel
-    }
+    
     
     
     //MARK: - Text Example
@@ -635,12 +627,7 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
     }
     
     func confirmed(_ title:String, detail:String)-> Bool {
-            let alert = NSAlert()
-            alert.messageText = title
-            alert.informativeText = detail
-            alert.alertStyle = NSAlert.Style.warning
-            alert.addButton(withTitle: "Do it anyway")
-            alert.addButton(withTitle: "Cancel")
+            let alert = ConfirmationAlert(title: title, detail: detail)
             let res = alert.runModal()
             if res == NSApplication.ModalResponse.alertFirstButtonReturn {
                 return true
@@ -648,6 +635,8 @@ class ViewController: NSViewController, NSTableViewDelegate, NSTableViewDataSour
             return false
     }
     
+    
+    //TODO: Refactor copied code
     func errorFromArray(title:String, errors:[String]) {
         if errors.count > 0 {
             var errorString = ""

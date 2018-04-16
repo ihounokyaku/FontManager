@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		BB518C167198327D0EBF6F41 /* Pods_FontManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8962885F0B3456347E5D4C26 /* Pods_FontManager.framework */; };
+		C40C45B4208475CA006DF26A /* FileManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40C45B3208475CA006DF26A /* FileManagement.swift */; };
+		C40C45B62084880D006DF26A /* DirectoryPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40C45B52084880D006DF26A /* DirectoryPanel.swift */; };
 		C40FE8082036D37C008541C0 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40FE8072036D37C008541C0 /* Extensions.swift */; };
 		C416860520405AD800B3E562 /* CustomCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C416860420405AD800B3E562 /* CustomCell.swift */; };
 		C42601A62036D9250026142D /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C42601A52036D9250026142D /* CoreDataManager.swift */; };
@@ -35,6 +37,9 @@
 		C4711F8920824FC4009E62E2 /* EditTextVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4711F8820824FC4009E62E2 /* EditTextVC.swift */; };
 		C4B6A459203C07D1007D42C4 /* FontFamily+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B6A457203C07D1007D42C4 /* FontFamily+CoreDataClass.swift */; };
 		C4B6A45A203C07D1007D42C4 /* FontFamily+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4B6A458203C07D1007D42C4 /* FontFamily+CoreDataProperties.swift */; };
+		C4BFA6AE20845E92009AAD91 /* ConfirmationAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4BFA6AD20845E92009AAD91 /* ConfirmationAlert.swift */; };
+		C4BFA6B12084617E009AAD91 /* SavePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4BFA6B02084617E009AAD91 /* SavePanel.swift */; };
+		C4BFA6B320846D80009AAD91 /* FilePanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4BFA6B220846D80009AAD91 /* FilePanel.swift */; };
 		C4CD1BA52053A93700AE7E7A /* Fixes.rtf in Resources */ = {isa = PBXBuildFile; fileRef = C4CD1BA42053A93700AE7E7A /* Fixes.rtf */; };
 		C4D20C1D203DD414003F910D /* FontFolder+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D20C1B203DD414003F910D /* FontFolder+CoreDataClass.swift */; };
 		C4D20C1E203DD414003F910D /* FontFolder+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D20C1C203DD414003F910D /* FontFolder+CoreDataProperties.swift */; };
@@ -43,6 +48,8 @@
 /* Begin PBXFileReference section */
 		8962885F0B3456347E5D4C26 /* Pods_FontManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_FontManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD2BFA5F20F2F83164676282 /* Pods-FontManager.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-FontManager.debug.xcconfig"; path = "Pods/Target Support Files/Pods-FontManager/Pods-FontManager.debug.xcconfig"; sourceTree = "<group>"; };
+		C40C45B3208475CA006DF26A /* FileManagement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileManagement.swift; sourceTree = "<group>"; };
+		C40C45B52084880D006DF26A /* DirectoryPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectoryPanel.swift; sourceTree = "<group>"; };
 		C40FE8072036D37C008541C0 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		C416860420405AD800B3E562 /* CustomCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCell.swift; sourceTree = "<group>"; };
 		C42601A52036D9250026142D /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
@@ -74,6 +81,9 @@
 		C4711F8820824FC4009E62E2 /* EditTextVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTextVC.swift; sourceTree = "<group>"; };
 		C4B6A457203C07D1007D42C4 /* FontFamily+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontFamily+CoreDataClass.swift"; sourceTree = "<group>"; };
 		C4B6A458203C07D1007D42C4 /* FontFamily+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontFamily+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		C4BFA6AD20845E92009AAD91 /* ConfirmationAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfirmationAlert.swift; sourceTree = "<group>"; };
+		C4BFA6B02084617E009AAD91 /* SavePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavePanel.swift; sourceTree = "<group>"; };
+		C4BFA6B220846D80009AAD91 /* FilePanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilePanel.swift; sourceTree = "<group>"; };
 		C4CD1BA42053A93700AE7E7A /* Fixes.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = Fixes.rtf; sourceTree = "<group>"; };
 		C4D20C1B203DD414003F910D /* FontFolder+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontFolder+CoreDataClass.swift"; sourceTree = "<group>"; };
 		C4D20C1C203DD414003F910D /* FontFolder+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FontFolder+CoreDataProperties.swift"; sourceTree = "<group>"; };
@@ -117,6 +127,7 @@
 				C4711F7F20822EE2009E62E2 /* EncodeManager.swift */,
 				C455BBB920836DBE0085BC5A /* ProjectEncoder.swift */,
 				C42E9BF9204185EB00A2AE68 /* FontImporter.swift */,
+				C40C45B3208475CA006DF26A /* FileManagement.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -148,8 +159,8 @@
 				C40FE8072036D37C008541C0 /* Extensions.swift */,
 				C416860420405AD800B3E562 /* CustomCell.swift */,
 				C437B40D203584DC0088B1BC /* AppDelegate.swift */,
-				C43040C420839D63006C0898 /* NewProjectPopup.swift */,
-				C4711F81208233BC009E62E2 /* Views */,
+				C4BFA6AF20846127009AAD91 /* Alerts and Panels */,
+				C4711F81208233BC009E62E2 /* Controllers */,
 				C42E9BF8204185BA00A2AE68 /* Managers */,
 				C4704696203B0F5D00778F29 /* SelectableCell.swift */,
 				C42E9BFB2042AB1100A2AE68 /* DraggableClip.swift */,
@@ -171,7 +182,7 @@
 			path = DataModel;
 			sourceTree = "<group>";
 		};
-		C4711F81208233BC009E62E2 /* Views */ = {
+		C4711F81208233BC009E62E2 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
 				C4711F8820824FC4009E62E2 /* EditTextVC.swift */,
@@ -180,7 +191,7 @@
 				C4711F82208236B1009E62E2 /* TextExampleVC.swift */,
 				C455BBB720836D410085BC5A /* ProjectVC.swift */,
 			);
-			path = Views;
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		C49AC8D9207F84E200C53F5B /* Data Model */ = {
@@ -196,6 +207,18 @@
 				C42601AA2036DBE70026142D /* Font+CoreDataProperties.swift */,
 			);
 			path = "Data Model";
+			sourceTree = "<group>";
+		};
+		C4BFA6AF20846127009AAD91 /* Alerts and Panels */ = {
+			isa = PBXGroup;
+			children = (
+				C43040C420839D63006C0898 /* NewProjectPopup.swift */,
+				C4BFA6AD20845E92009AAD91 /* ConfirmationAlert.swift */,
+				C4BFA6B220846D80009AAD91 /* FilePanel.swift */,
+				C40C45B52084880D006DF26A /* DirectoryPanel.swift */,
+				C4BFA6B02084617E009AAD91 /* SavePanel.swift */,
+			);
+			path = "Alerts and Panels";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -335,8 +358,10 @@
 				C4D20C1E203DD414003F910D /* FontFolder+CoreDataProperties.swift in Sources */,
 				C4D20C1D203DD414003F910D /* FontFolder+CoreDataClass.swift in Sources */,
 				C4B6A459203C07D1007D42C4 /* FontFamily+CoreDataClass.swift in Sources */,
+				C40C45B4208475CA006DF26A /* FileManagement.swift in Sources */,
 				C416860520405AD800B3E562 /* CustomCell.swift in Sources */,
 				C437B410203584DC0088B1BC /* ViewController.swift in Sources */,
+				C4BFA6B12084617E009AAD91 /* SavePanel.swift in Sources */,
 				C437B40E203584DC0088B1BC /* AppDelegate.swift in Sources */,
 				C4704697203B0F5D00778F29 /* SelectableCell.swift in Sources */,
 				C437B413203584DC0088B1BC /* FontManager.xcdatamodeld in Sources */,
@@ -350,12 +375,15 @@
 				C42E9BFA204185EB00A2AE68 /* FontImporter.swift in Sources */,
 				C42E9BFC2042AB1100A2AE68 /* DraggableClip.swift in Sources */,
 				C455BBB620836CA20085BC5A /* Project.swift in Sources */,
+				C40C45B62084880D006DF26A /* DirectoryPanel.swift in Sources */,
 				C4711F83208236B1009E62E2 /* TextExampleVC.swift in Sources */,
 				C42601AD2036DBE70026142D /* Font+CoreDataClass.swift in Sources */,
 				C4711F8020822EE2009E62E2 /* EncodeManager.swift in Sources */,
 				C42601A62036D9250026142D /* CoreDataManager.swift in Sources */,
 				C42601AE2036DBE70026142D /* Font+CoreDataProperties.swift in Sources */,
+				C4BFA6AE20845E92009AAD91 /* ConfirmationAlert.swift in Sources */,
 				C4711F8920824FC4009E62E2 /* EditTextVC.swift in Sources */,
+				C4BFA6B320846D80009AAD91 /* FilePanel.swift in Sources */,
 				C4711F7B20822D9F009E62E2 /* ExampleText.swift in Sources */,
 				C455BBBA20836DBE0085BC5A /* ProjectEncoder.swift in Sources */,
 				C40FE8082036D37C008541C0 /* Extensions.swift in Sources */,

@@ -40,14 +40,40 @@ class ProjectEncoder: NSObject {
     }
     
     func newProject(name:String, fonts:[String]?) {
-        let project = Project(name:name)
-        if let fontArray = fonts {
-            project.fonts = fontArray
+        if name != "" {
+            let project = Project(name:name)
+            if let fontArray = fonts {
+                project.fonts = fontArray
+            }
+            self.projectArray.append(project)
+            self.saveProjects()
         }
-        self.projectArray.append(project)
-        self.saveProjects()
     }
     
+    func export(project:Project, to path:String)->String? {
+        let encoder = PropertyListEncoder()
+        do {
+            let data = try encoder.encode(project)
+            try data.write(to:URL(fileURLWithPath: path))
+            return nil
+        } catch {
+            return error.localizedDescription
+        }
+    }
+    
+    func importProject(from url:URL)-> String? {
+
+            do {
+                let data = try Data(contentsOf:url)
+                let decoder = PropertyListDecoder()
+                self.projectArray.append(try decoder.decode(Project.self, from: data))
+                self.saveProjects()
+                return nil
+            } catch {
+                return error.localizedDescription
+            }
+    }
+
     
     
     

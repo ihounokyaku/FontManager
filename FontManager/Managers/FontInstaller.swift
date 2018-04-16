@@ -33,7 +33,9 @@ class FontInstaller: NSObject {
     }
     
     func chooseSystemFontDirectory(_ loop:Bool = false) {
-        let panel = self.delegate.directoryPanel(message: "Please select your font folder", url: self.fontFolderPath)
+        
+        
+        let panel = DirectoryPanel(message: "Please select your font folder", url: self.fontFolderPath).panel
         panel.beginSheetModal(for: delegate.view.window!, completionHandler: {(response) -> Void in
             if response == .cancel{
                 if loop {
@@ -49,7 +51,7 @@ class FontInstaller: NSObject {
     func chooseFontDirectory(_ loop:Bool = false) {
     }
 
-//==================GET INSTALLED=======================
+    //MARK: - ==================GET INSTALLED=======================
     
     func getInstalledFonts() {
         print("getting installed")
@@ -65,7 +67,7 @@ class FontInstaller: NSObject {
     }
     
     
-//==================INSTALL==============================
+    //MARK: - ==================INSTALL==============================
     
     func installFonts(fonts:[Font]) {
         var errors = [String]()
@@ -97,7 +99,7 @@ class FontInstaller: NSObject {
     
     
     
-//==================REMOVE==============================
+    //MARK: - ==================REMOVE==============================
     func removeFonts(fonts:[Font]) {
         var errors = [String]()
         if self.delegate.fontsMissing(fonts: fonts, true) {
@@ -127,7 +129,7 @@ class FontInstaller: NSObject {
     }
 
     
-//================= CHECK FOR INSTALLED =========================
+    //MARK: - ================= CHECK FOR INSTALLED =========================
     
     func fontsInstalled(fonts:[Font], any:Bool = false, verbose:Bool = false)-> Bool {
         for font in fonts {

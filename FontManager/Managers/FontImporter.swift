@@ -14,7 +14,7 @@ class FontImporter: NSObject {
 
 //=========== IMPORT FROM DIRECTORY ============================
     func chooseFontDirectory() {
-        let panel = self.delegate.directoryPanel(message: "Please select your Directory", url: "")
+        let panel = DirectoryPanel(message: "Please select your Directory", url: "").panel
         panel.beginSheetModal(for: delegate.view.window!, completionHandler: {(response) -> Void in
             if response == .cancel{
                 
@@ -78,7 +78,9 @@ class FontImporter: NSObject {
                 
                 if let font = coreDataResults as? Font {
                     if font.path != fontURL["fontUrl"]!.path {
-                        newFonts.append(["font":font, "path":fontURL["fontUrl"]!.path, "mainDirectoryPath":fontURL["mainFolderUrl"]!.path, "subdirectory":subDirectory])
+                        DispatchQueue.main.async {
+                            newFonts.append(["font":font, "path":fontURL["fontUrl"]!.path, "mainDirectoryPath":fontURL["mainFolderUrl"]!.path, "subdirectory":subDirectory])
+                        }
                     }
                 } else {
                     
